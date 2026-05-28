@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>音声読み上げ支援教材の作り方：読みに困難のある子どもへのアプローチ | E-edu</title>
+  <meta name="description" content="読みに困難のある子どもへの音声読み上げ支援教材の作り方を解説。無料ツール「よみあげメーカー」でPDFに音声ボタンを配置したHTMLファイルを作成する手順と教育的効果を紹介。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://e-edu.jp/article-reading-support.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6LYGM71B9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G6LYGM71B9');
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      min-height: 100vh;
+      color: #1f2937;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    header { margin-bottom: 40px; }
+    .logo { text-align: center; margin-bottom: 20px; }
+    .logo a { font-size: 1.8rem; color: #065f46; text-decoration: none; font-weight: bold; }
+    nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    nav a { color: #059669; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 24px; }
+    .breadcrumb a { color: #059669; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .article {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    .article-tag {
+      display: inline-block;
+      background: #ecfdf5;
+      color: #059669;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 1.6rem; color: #065f46; margin-bottom: 12px; line-height: 1.5; }
+    .article-meta { color: #9ca3af; font-size: 0.85rem; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb; }
+    h2 {
+      font-size: 1.2rem;
+      color: #065f46;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d1fae5;
+    }
+    h3 { font-size: 1.05rem; color: #065f46; margin-top: 24px; margin-bottom: 12px; }
+    p { color: #4b5563; line-height: 1.9; margin-bottom: 16px; }
+    ul, ol { color: #4b5563; line-height: 1.9; margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; }
+    .step-list { list-style: none; padding-left: 0; counter-reset: step-counter; }
+    .step-list li {
+      counter-increment: step-counter;
+      padding: 16px 16px 16px 60px;
+      margin-bottom: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      position: relative;
+    }
+    .step-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #059669;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    .highlight-box {
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-left: 4px solid #059669;
+    }
+    .highlight-box p { color: #065f46; margin-bottom: 0; }
+    .note-box {
+      background: #fef3c7;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .note-box p { color: #92400e; margin-bottom: 0; }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+    .comparison-table th {
+      background: #065f46;
+      color: white;
+      padding: 12px 16px;
+      text-align: left;
+    }
+    .comparison-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      color: #4b5563;
+      vertical-align: top;
+    }
+    .comparison-table tr:nth-child(even) td { background: #f9fafb; }
+    .tool-cta {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-radius: 12px;
+      padding: 28px;
+      margin: 32px 0;
+      text-align: center;
+    }
+    .tool-cta h3 { color: #065f46; margin-bottom: 12px; }
+    .tool-cta p { color: #4b5563; margin-bottom: 20px; font-size: 0.95rem; }
+    .tool-cta a {
+      display: inline-block;
+      background: #059669;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+      margin: 4px 8px;
+    }
+    .tool-cta a:hover { background: #047857; }
+    .related-articles { margin-bottom: 40px; }
+    .related-articles h2 { font-size: 1.1rem; color: #065f46; margin-bottom: 16px; border-bottom: none; }
+    .related-link {
+      display: block;
+      background: white;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-decoration: none;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      color: #065f46;
+      transition: box-shadow 0.2s;
+    }
+    .related-link:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .related-link span { color: #6b7280; font-size: 0.85rem; display: block; margin-top: 4px; }
+    footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
+    footer p { color: #6b7280; font-size: 0.9rem; }
+    footer nav { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo"><a href="/">E-edu</a></div>
+      <nav>
+        <a href="/">ホーム</a>
+        <a href="/articles.html">記事・ガイド</a>
+        <a href="/about.html">運営者情報</a>
+        <a href="/privacy.html">プライバシーポリシー</a>
+        <a href="/terms.html">利用規約</a>
+        <a href="/contact.html">お問い合わせ</a>
+      </nav>
+    </header>
+
+    <p class="breadcrumb"><a href="/">ホーム</a> &gt; <a href="/articles.html">記事・ガイド</a> &gt; 音声読み上げ支援教材の作り方</p>
+
+    <article class="article">
+      <span class="article-tag">読み上げ支援</span>
+      <h1>音声読み上げ支援教材の作り方：読みに困難のある子どもへのアプローチ</h1>
+      <p class="article-meta">2026年5月28日 ／ 音声読み上げ・読み支援・合理的配慮・よみあげメーカー</p>
+
+      <p>読むことに困難のある子どもへの支援のひとつとして、「音声読み上げ」があります。教材の文字をコンピューターが音声で読み上げることで、文字を読む負担を大幅に軽減し、学習内容の理解に集中できます。本記事では、音声読み上げ支援の教育的意義と、無料ツール「よみあげメーカー」を使った支援教材の作り方を解説します。</p>
+
+      <h2>音声読み上げ支援とは</h2>
+      <p>音声読み上げ支援（テキスト・トゥ・スピーチ支援、TTS支援）とは、文字として書かれたテキストを音声に変換して提示する配慮・支援の方法です。スクリーンリーダーのような汎用ソフトウェアから、教材に特化したシステムまで、さまざまな形態があります。</p>
+
+      <p>この支援が特に有効なのは、以下のような子どもたちです。</p>
+      <ul>
+        <li><strong>ディスレクシア（読み書き困難）のある子ども：</strong>文字を音に変換する処理（音韻処理）に困難があるため、文字を読むことに多大な認知的負荷がかかります。音声で提示されると、その負荷が取り除かれ、内容理解に集中できます。</li>
+        <li><strong>視覚機能に課題のある子ども：</strong>見え方に困難がある子どもにとって、音声による情報提示はアクセシビリティを高めます。</li>
+        <li><strong>日本語が母語でない子ども：</strong>読み方がわからない漢字やひらがな・カタカナが多い場合、音声読み上げが理解の助けになります。</li>
+        <li><strong>疲れやすい子ども：</strong>文字を読む作業は思いのほかエネルギーを消費します。読み上げを活用することで学習の持続時間が延びる場合があります。</li>
+      </ul>
+
+      <h2>従来の音声読み上げ支援の課題</h2>
+      <p>音声読み上げ支援の重要性は多くの教育関係者が認識していますが、実際の学校現場での導入にはいくつかの課題がありました。</p>
+
+      <ul>
+        <li><strong>専用ソフトのコスト：</strong>市販の読み上げソフトや支援ツールは費用が発生するものが多く、予算の限られた学校では導入が難しいケースがあります。</li>
+        <li><strong>テキストデータの準備：</strong>PDFや紙の教材には、そのままでは音声読み上げできないものが多く、テキストデータを別途作成する手間がありました。</li>
+        <li><strong>教材との同期：</strong>音声と教材を同期させることが難しく、どこを読み上げているかわかりにくいという問題がありました。</li>
+        <li><strong>iPadでの利用の複雑さ：</strong>学校で広く使われているiPadで音声付き教材を使うための設定が複雑でした。</li>
+      </ul>
+
+      <h2>よみあげメーカーによるアプローチ</h2>
+      <p>E-eduの「よみあげメーカー」は、これらの課題を解決するために開発された無料Webツールです。PDFの任意の場所に音声読み上げボタンを配置し、HTMLファイルとして出力できます。</p>
+
+      <div class="highlight-box">
+        <p><strong>よみあげメーカーの仕組み：</strong>PDFをアップロードすると、各ページが画像として表示されます。教師が「ここを読んでほしい」という箇所にボタンを配置し、読み上げるテキストを入力します。完成したHTMLファイルをブラウザで開くと、ボタンを押すだけで対応するテキストが読み上げられます。</p>
+      </div>
+
+      <h3>なぜHTMLファイルとして出力するのか</h3>
+      <p>音声読み上げボタン付きの教材をHTMLファイルとして出力することには、いくつかの利点があります。ブラウザの音声合成機能（Web Speech API）を使うため、特別なソフトのインストールが不要です。Windows・Mac・iPad・Android端末など、ほぼすべてのデバイスで動作します。また、テキストと音声が一対一で対応しているため、どこが読み上げられているかが明確です。</p>
+
+      <h2>よみあげメーカーの使い方：手順</h2>
+
+      <ol class="step-list">
+        <li>よみあげメーカー（yomiage.e-edu.jp）にアクセスし、「PDFを選択」ボタンをクリックしてPDFファイルを読み込みます。</li>
+        <li>PDFが画像として表示されます。音声ボタンを配置したい箇所をクリックすると、その位置にボタンが追加されます。</li>
+        <li>ボタンをクリックすると、読み上げるテキストを入力する欄が表示されます。PDFのテキストが自動で認識されている場合はそのままコピーして使えます。必要に応じて編集・修正します。</li>
+        <li>ボタンのサイズや配置を調整します。複数のページにわたってボタンを配置する場合は、ページを切り替えながら作業します。</li>
+        <li>「プレビュー」ボタンで実際の動作を確認し、問題なければ「HTMLで保存」ボタンでHTMLファイルをダウンロードします。</li>
+        <li>ダウンロードしたHTMLファイルをブラウザで開くか、よみあげファイルビューワー（yomiage.e-edu.jp/view）に読み込ませると、音声ボタン付き教材が利用できます。</li>
+      </ol>
+
+      <div class="note-box">
+        <p><strong>iPadの場合：</strong>iPadではHTMLファイルの直接ダウンロード・保存が制限されることがあります。よみあげファイルビューワーを使うと、iPad上でHTMLファイルを手軽に開いて利用できます。</p>
+      </div>
+
+      <h2>音声読み上げボタンの配置のコツ</h2>
+
+      <h3>問題文全体と小問の両方にボタンを</h3>
+      <p>テスト問題のような教材では、問題文全体を読み上げるボタンと、各小問を読み上げるボタンの両方を配置すると使いやすくなります。生徒が必要な部分だけを繰り返し聴けるようになります。</p>
+
+      <h3>説明文や指示文には必ず配置</h3>
+      <p>「次の文章を読んで答えなさい」「以下の計算をしなさい」といった指示文にボタンを配置すると、何をすれば良いかを自分で確認できます。特に低学年や知的障害のある子どもにとって重要です。</p>
+
+      <h3>ボタンのサイズは大きめに</h3>
+      <p>タッチ操作で使うiPadなどの場合、ボタンが小さいと操作しにくいです。特にタブレット利用を想定している場合は、ボタンを大きめに設定することをおすすめします。</p>
+
+      <h2>授業・テストでの活用事例</h2>
+
+      <h3>通常学級でのテスト配慮</h3>
+      <p>読み書き困難のある生徒に対し、通常のテストと同じ問題をよみあげメーカーで音声ボタン付きにしたHTMLファイルを用意します。テスト中にタブレットやノートPCを使い、音声ボタンで問題文を確認しながら解答します。他の生徒と同じテストを受けながら、読みへのアクセシビリティだけが異なる形です。</p>
+
+      <h3>特別支援学級での授業教材</h3>
+      <p>知的障害や発達障害のある生徒が多い特別支援学級では、授業で使うワークシートをよみあげメーカーで音声ボタン付きにしておくことで、教師の読み上げがなくても自分のペースで学習を進めることができます。教師が他の生徒への指導にあたる間も、生徒が自立して取り組める環境を作れます。</p>
+
+      <h3>家庭学習・宿題での活用</h3>
+      <p>宿題プリントをよみあげメーカーでHTMLファイル化して持ち帰ることで、家庭でも音声支援付きの学習ができます。保護者への負担を軽減しつつ、子ども自身が主体的に取り組める環境を整えることができます。</p>
+
+      <table class="comparison-table">
+        <tr>
+          <th>場面</th>
+          <th>従来の対応</th>
+          <th>よみあげメーカー活用後</th>
+        </tr>
+        <tr>
+          <td>テスト時の読み上げ</td>
+          <td>教師や支援員が付き添って口頭で読み上げ</td>
+          <td>生徒自身がボタンを押して必要な部分だけ聴ける</td>
+        </tr>
+        <tr>
+          <td>授業プリント</td>
+          <td>教師が全体に向けて指示・読み上げ</td>
+          <td>自分のペースで音声確認しながら取り組める</td>
+        </tr>
+        <tr>
+          <td>家庭学習</td>
+          <td>保護者が読み上げサポート</td>
+          <td>子ども自身が自立して取り組める</td>
+        </tr>
+      </table>
+
+      <h2>よみあげファイルビューワーの活用</h2>
+      <p>よみあげメーカーで作成したHTMLファイルを開くためのビューワーアプリが「よみあげファイルビューワー」です。特に、iPadやiPhoneでHTMLファイルを開くのに便利です。</p>
+
+      <p>使い方はシンプルで、よみあげファイルビューワー（yomiage.e-edu.jp/view）にアクセスし、HTMLファイルを選択またはドラッグ＆ドロップするだけです。Windowsでは通常のブラウザでHTMLファイルを直接開けますが、iPadでは制限があるため、このビューワーを使うと手軽に利用できます。</p>
+
+      <div class="tool-cta">
+        <h3>よみあげメーカー・よみあげファイルビューワーを使ってみる</h3>
+        <p>どちらも完全無料・登録不要。ファイルはブラウザ内のみで処理されます。</p>
+        <a href="https://yomiage.e-edu.jp/" target="_blank" rel="noopener noreferrer">よみあげメーカーを開く →</a>
+        <a href="https://yomiage.e-edu.jp/view" target="_blank" rel="noopener noreferrer">ファイルビューワーを開く →</a>
+      </div>
+
+      <h2>まとめ</h2>
+      <p>音声読み上げ支援は、読み書き困難をはじめとする様々な困難を抱える子どもたちの学習アクセスを向上させる、有効な合理的配慮のひとつです。よみあげメーカーを使うことで、既存のPDF教材を音声ボタン付きHTMLファイルに変換でき、特別なソフトや機器なしにどのデバイスでも利用できます。</p>
+
+      <p>「すべての子どもたちが学びにアクセスできる環境を」というE-eduの理念のもと、音声読み上げ支援がより多くの現場で実践されることを願っています。</p>
+    </article>
+
+    <div class="related-articles">
+      <h2>関連記事</h2>
+      <a href="/article-reasonable-accommodation.html" class="related-link">
+        合理的配慮とは？学校現場での実践方法をわかりやすく解説
+        <span>特別支援教育・合理的配慮</span>
+      </a>
+      <a href="/article-furigana-guide.html" class="related-link">
+        教材・テストにふりがなを付ける方法：ふりがなメーカーの使い方と効果
+        <span>ふりがな・PDF・合理的配慮</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 E-edu. All rights reserved.</p>
+    <nav>
+      <a href="/">ホーム</a>
+      <a href="/articles.html">記事・ガイド</a>
+      <a href="/about.html">運営者情報</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</body>
+</html>

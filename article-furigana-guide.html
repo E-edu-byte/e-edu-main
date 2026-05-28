@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教材・テストにふりがなを付ける方法：ふりがなメーカーの使い方と効果 | E-edu</title>
+  <meta name="description" content="読み書き困難のある子どもへの合理的配慮として、PDFにふりがなを自動付与できる無料ツール「ふりがなメーカー」の使い方を手順付きで解説。学年別フィルターなど便利な機能も紹介。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://e-edu.jp/article-furigana-guide.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6LYGM71B9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G6LYGM71B9');
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      min-height: 100vh;
+      color: #1f2937;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    header { margin-bottom: 40px; }
+    .logo { text-align: center; margin-bottom: 20px; }
+    .logo a { font-size: 1.8rem; color: #065f46; text-decoration: none; font-weight: bold; }
+    nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    nav a { color: #059669; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 24px; }
+    .breadcrumb a { color: #059669; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .article {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    .article-tag {
+      display: inline-block;
+      background: #ecfdf5;
+      color: #059669;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 1.6rem; color: #065f46; margin-bottom: 12px; line-height: 1.5; }
+    .article-meta { color: #9ca3af; font-size: 0.85rem; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb; }
+    h2 {
+      font-size: 1.2rem;
+      color: #065f46;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d1fae5;
+    }
+    h3 { font-size: 1.05rem; color: #065f46; margin-top: 24px; margin-bottom: 12px; }
+    p { color: #4b5563; line-height: 1.9; margin-bottom: 16px; }
+    ul, ol { color: #4b5563; line-height: 1.9; margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; }
+    .step-list { list-style: none; padding-left: 0; counter-reset: step-counter; }
+    .step-list li {
+      counter-increment: step-counter;
+      padding: 16px 16px 16px 60px;
+      margin-bottom: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      position: relative;
+    }
+    .step-list li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #059669;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    .highlight-box {
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-left: 4px solid #059669;
+    }
+    .highlight-box p { color: #065f46; margin-bottom: 0; }
+    .note-box {
+      background: #fef3c7;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .note-box p { color: #92400e; margin-bottom: 0; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .feature-item {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .feature-item h4 { color: #065f46; font-size: 0.9rem; margin-bottom: 8px; }
+    .feature-item p { font-size: 0.85rem; margin-bottom: 0; }
+    .tool-cta {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-radius: 12px;
+      padding: 28px;
+      margin: 32px 0;
+      text-align: center;
+    }
+    .tool-cta h3 { color: #065f46; margin-bottom: 12px; }
+    .tool-cta p { color: #4b5563; margin-bottom: 20px; font-size: 0.95rem; }
+    .tool-cta a {
+      display: inline-block;
+      background: #059669;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .tool-cta a:hover { background: #047857; }
+    .related-articles { margin-bottom: 40px; }
+    .related-articles h2 { font-size: 1.1rem; color: #065f46; margin-bottom: 16px; border-bottom: none; }
+    .related-link {
+      display: block;
+      background: white;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-decoration: none;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      color: #065f46;
+      transition: box-shadow 0.2s;
+    }
+    .related-link:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .related-link span { color: #6b7280; font-size: 0.85rem; display: block; margin-top: 4px; }
+    footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
+    footer p { color: #6b7280; font-size: 0.9rem; }
+    footer nav { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo"><a href="/">E-edu</a></div>
+      <nav>
+        <a href="/">ホーム</a>
+        <a href="/articles.html">記事・ガイド</a>
+        <a href="/about.html">運営者情報</a>
+        <a href="/privacy.html">プライバシーポリシー</a>
+        <a href="/terms.html">利用規約</a>
+        <a href="/contact.html">お問い合わせ</a>
+      </nav>
+    </header>
+
+    <p class="breadcrumb"><a href="/">ホーム</a> &gt; <a href="/articles.html">記事・ガイド</a> &gt; ふりがなを付ける方法</p>
+
+    <article class="article">
+      <span class="article-tag">ふりがな支援</span>
+      <h1>教材・テストにふりがなを付ける方法：ふりがなメーカーの使い方と効果</h1>
+      <p class="article-meta">2026年5月28日 ／ ふりがな・PDF・合理的配慮・ふりがなメーカー</p>
+
+      <p>テストや授業プリントにふりがなを付けることは、読み書き困難のある子どもへの合理的配慮として広く実践されています。しかし従来は、WordのルビやPDF編集ソフトを使って手作業で付ける必要があり、時間と手間がかかる作業でした。本記事では、無料Webツール「ふりがなメーカー」を使ったPDFへのふりがな自動付与の方法と、その教育的効果について解説します。</p>
+
+      <h2>なぜふりがなは合理的配慮として重要か</h2>
+      <p>読み書き困難（ディスレクシア）や知的発達の遅れを伴う子どもたちにとって、漢字の読みは大きな壁になることがあります。たとえば、算数の文章問題が解けるだけの理解力はあっても、問題文の漢字が読めないために問題の意図がわからず、得点できないというケースは少なくありません。</p>
+
+      <p>ふりがなを付けることで、「読むこと」のハードルが下がり、子ども本来の理解力や学習成果を適切に評価することが可能になります。これは、その子どもの「できること」を正しく引き出すための支援です。</p>
+
+      <div class="highlight-box">
+        <p><strong>重要：</strong>ふりがなの付与はすべての学習場面で有効です。テストだけでなく、授業中のワークシート・宿題プリント・家庭学習の教材など、さまざまな場面での活用が推奨されます。</p>
+      </div>
+
+      <h2>ふりがなメーカーの特徴</h2>
+      <p>E-eduの「ふりがなメーカー」は、ブラウザ上でPDFを読み込み、自動でふりがなを付与できる無料のWebツールです。インストール不要で、パソコン・タブレットから利用できます。</p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4>自動ふりがな付与</h4>
+          <p>PDFをアップロードするだけで、漢字に自動でふりがなを付けます。</p>
+        </div>
+        <div class="feature-item">
+          <h4>学年別フィルター</h4>
+          <p>小1〜小6・中学以上の学年設定で、対象学年に合わせた漢字にのみふりがなを付けます。</p>
+        </div>
+        <div class="feature-item">
+          <h4>編集・調整機能</h4>
+          <p>自動付与されたふりがなの修正や位置調整、色・サイズの変更が可能です。</p>
+        </div>
+        <div class="feature-item">
+          <h4>完全無料・登録不要</h4>
+          <p>無料でご利用いただけます。アカウント登録は不要です。</p>
+        </div>
+        <div class="feature-item">
+          <h4>ファイル外部送信なし</h4>
+          <p>ファイルはブラウザ内のみで処理。サーバーに送信されません。</p>
+        </div>
+        <div class="feature-item">
+          <h4>縦書き・横書き対応</h4>
+          <p>縦書き文書も横書き文書も対応しています。</p>
+        </div>
+      </div>
+
+      <h2>PDFファイルの準備方法</h2>
+      <p>ふりがなメーカーはPDF形式のファイルを対象としています。テストや教材がWord・Excel・PowerPoint形式の場合は、先にPDFに変換してから使用します。</p>
+
+      <h3>WordからPDFに変換する方法</h3>
+      <ol>
+        <li>Wordで文書を開き、「ファイル」→「名前を付けて保存」を選択します</li>
+        <li>保存形式のドロップダウンから「PDF」を選択します</li>
+        <li>「保存」をクリックしてPDFを書き出します</li>
+      </ol>
+
+      <h3>ExcelやPowerPointの場合</h3>
+      <p>WordからPDFへの変換と同様に、「ファイル」→「エクスポート」→「PDF/XPS ドキュメントの作成」を選ぶことでPDFに変換できます。</p>
+
+      <h2>ふりがなメーカーの使い方：ステップごとの手順</h2>
+
+      <ol class="step-list">
+        <li>ふりがなメーカー（furigana.e-edu.jp）にアクセスし、「PDFを選択」ボタンをクリックしてPDFファイルを読み込みます。ドラッグ＆ドロップでも読み込めます。</li>
+        <li>学年を選択します。「小1」〜「小6」または「中学以上（常用漢字）」から選ぶと、その学年で習う漢字に対してのみふりがなが付与されます。</li>
+        <li>ふりがなが付与されたPDFが表示されます。誤って読まれた漢字があれば、ふりがな部分をクリックして直接編集できます。</li>
+        <li>ふりがなの位置がズレている場合は、ドラッグで移動できます。フォントサイズや色の変更も可能です。</li>
+        <li>編集が完了したら「プレビュー」のボタンを押し、確認後に「PDFをダウンロード」ボタンで保存します。</li>
+      </ol>
+
+      <div class="note-box">
+        <p><strong>注意：</strong>自動ふりがな付与は非常に精度が高いですが、固有名詞や専門用語など一部の漢字では誤読が生じることがあります。必ず一度目視で確認・修正してください。</p>
+      </div>
+
+      <h2>学年別フィルターの活用方法</h2>
+      <p>学年別フィルター機能は、特定の学年の子どもに合わせた教材作成に非常に便利な機能です。</p>
+
+      <h3>使い方の例</h3>
+      <ul>
+        <li><strong>小学校3年生のクラスで使う場合：</strong>「小１」、「小２」のボタンをOFFにすると、3年生以降に習う漢字（4年生以上で習う漢字）にのみふりがなが付与されます。3年生までに習った漢字にはふりがなが付かないため、既習漢字の学習機会も保たれます。</li>
+        <li><strong>読み書き困難のある中学生の場合：</strong>「小5」や「小6」を選択することで、高学年の漢字にのみふりがなを付けつつ、低学年の漢字は本人の読み習熟を促す配慮ができます。</li>
+      </ul>
+
+      <h2>ふりがな付き教材の活用シーン</h2>
+
+      <h3>定期テストでの配慮</h3>
+      <p>通常クラスの定期テストを実施する際、読み書き困難のある生徒に限ってふりがな付きテストを配布します。問題の難易度や内容は同じで、読みのアクセシビリティだけを変更するため、評価の公平性も保たれます。</p>
+
+      <h3>日常の授業プリント</h3>
+      <p>毎日の授業で配布するプリントをふりがな付きにすることで、授業への参加度が向上します。全員に配布するふりがな付きバージョンを作成してもよいですし、特定の子どもだけに配布する個別対応版として作成しても使えます。</p>
+
+      <h3>家庭学習・宿題</h3>
+      <p>宿題として出す場合にも、ふりがな付きバージョンを用意することで、家庭でも自立した学習が可能になります。保護者のサポートが少ない場面でも、子ども本人が取り組める環境を整えることができます。</p>
+
+      <h2>ワード・エクセル・パワーポイントからPDF化する際のポイント</h2>
+      <p>既存の教材がOfficeファイルの場合、PDF化してからふりがなを付与することになります。その際、以下の点に注意してください。</p>
+
+      <ul>
+        <li><strong>画像として保存されたPDFは文字認識できません：</strong>スキャンしたPDFや、画像として書き出したPDFは、文字データが含まれないためふりがな付与ができません。Officeソフトから直接「名前を付けて保存」でPDFにしたものが最適です。</li>
+        <li><strong>フォントの埋め込み：</strong>PDFを作成する際、「フォントを埋め込む」設定にしておくと、文字が正しく認識されやすくなります。</li>
+        <li><strong>縦書き文書：</strong>縦書きのWordファイルからPDFにした場合も、ふりがなメーカーは縦書きに対応しています。</li>
+      </ul>
+
+      <div class="tool-cta">
+        <h3>今すぐふりがなメーカーを使ってみる</h3>
+        <p>完全無料・登録不要。お手持ちのPDFで試してみてください。ファイルはブラウザ内のみで処理され、外部には送信されません。</p>
+        <a href="https://furigana.e-edu.jp/" target="_blank" rel="noopener noreferrer">ふりがなメーカーを開く →</a>
+      </div>
+
+      <h2>まとめ</h2>
+      <p>ふりがなメーカーを使うことで、これまで時間のかかっていたふりがな付与の作業を大幅に効率化できます。PDF化さえできれば既存の教材にそのまま使えるため、新たな教材作成の手間もかかりません。</p>
+
+      <p>読み書き困難のある子どもたちへの必要な配慮は、特別なことではありません。少しの工夫で、その子が持っている力を最大限に発揮できる環境を整えることができます。ふりがなメーカーがその一助となれば幸いです。</p>
+    </article>
+
+    <div class="related-articles">
+      <h2>関連記事</h2>
+      <a href="/article-reasonable-accommodation.html" class="related-link">
+        合理的配慮とは？学校現場での実践方法をわかりやすく解説
+        <span>特別支援教育・合理的配慮</span>
+      </a>
+      <a href="/article-reading-support.html" class="related-link">
+        音声読み上げ支援教材の作り方：読みに困難のある子どもへのアプローチ
+        <span>音声読み上げ・読み支援・合理的配慮</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 E-edu. All rights reserved.</p>
+    <nav>
+      <a href="/">ホーム</a>
+      <a href="/articles.html">記事・ガイド</a>
+      <a href="/about.html">運営者情報</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</body>
+</html>
