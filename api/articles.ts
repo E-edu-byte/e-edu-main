@@ -305,8 +305,8 @@ function decodeEntities(s: string): string {
 }
 
 // articles.html のカード一覧をパース
-function parseCards(html: string): Array<{ slug: string; title: string; tag: string; meta: string }> {
-  const list: Array<{ slug: string; title: string; tag: string; meta: string }> = [];
+function parseCards(html: string): Array<{ slug: string; title: string; tag: string; meta: string; description: string }> {
+  const list: Array<{ slug: string; title: string; tag: string; meta: string; description: string }> = [];
   const re = /<a href="\/article-([^"]+)\.html" class="article-card">([\s\S]*?)<\/a>/g;
   let m;
   while ((m = re.exec(html))) {
@@ -316,9 +316,30 @@ function parseCards(html: string): Array<{ slug: string; title: string; tag: str
       title: decodeEntities((inner.match(/<h2>([\s\S]*?)<\/h2>/)?.[1] || '').trim()),
       tag: decodeEntities((inner.match(/<span class="article-tag">([\s\S]*?)<\/span>/)?.[1] || '').trim()),
       meta: decodeEntities((inner.match(/<p class="article-meta">([\s\S]*?)<\/p>/)?.[1] || '').trim()),
+      description: decodeEntities((inner.match(/<p>([\s\S]*?)<\/p>/)?.[1] || '').trim()),
     });
   }
   return list;
+}
+
+// トップページ（index.html）の記事紹介セクションを生成
+const TOP_N = 3;
+function buildIndexSection(cards: Array<{ slug: string; title: string; description: string }>): string {
+  return cards.slice(0, TOP_N).map(c => `      <div class="faq-item">
+        <h3><a href="/article-${c.slug}.html" style="color:#065f46;text-decoration:none;">${esc(c.title)}</a></h3>
+        <p>${esc(c.description)}<a href="/article-${c.slug}.html" style="color:#059669;">続きを読む →</a></p>
+      </div>`).join('\n\n');
+}
+async function updateIndexHtml(cards: Array<{ slug: string; title: string; description: string }>) {
+  const idx = await ghGet('index.html');
+  if (!idx) return;
+  const marker = /(<!-- ARTICLES:START -->)[\s\S]*?(<!-- ARTICLES:END -->)/;
+  if (!marker.test(idx.text)) return; // マーカーが無ければ何もしない
+  const section = buildIndexSection(cards);
+  const next = idx.text.replace(marker, `$1\n${section}\n      $2`);
+  if (next !== idx.text) {
+    await ghPut('index.html', next, 'トップページ記事欄を更新', idx.sha);
+  }
 }
 
 function buildCard(a: ArticleData): string {
@@ -416,14 +437,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // 2) articles.html カード
       const list = await ghGet('articles.html');
+      let newListText = list?.text || '';
       if (list) {
-        await ghPut('articles.html', upsertCard(list.text, a), `記事一覧更新: ${a.slug}`, list.sha);
+        newListText = upsertCard(list.text, a);
+        await ghPut('articles.html', newListText, `記事一覧更新: ${a.slug}`, list.sha);
       }
 
       // 3) sitemap.xml
       const sm = await ghGet('sitemap.xml');
       if (sm) {
         await ghPut('sitemap.xml', upsertSitemap(sm.text, a.slug, date), `sitemap更新: ${a.slug}`, sm.sha);
+      }
+
+      // 4) トップページの記事紹介欄
+      if (newListText) {
+        await updateIndexHtml(parseCards(newListText));
       }
 
       return res.status(200).json({ success: true, url: `https://e-edu.jp/article-${a.slug}.html` });
@@ -437,10 +465,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (art) await ghDelete(`article-${slug}.html`, `記事削除: ${slug}`, art.sha);
 
       const list = await ghGet('articles.html');
-      if (list) await ghPut('articles.html', removeCard(list.text, slug), `記事一覧から削除: ${slug}`, list.sha);
+      let newListText = list?.text || '';
+      if (list) {
+        newListText = removeCard(list.text, slug);
+        await ghPut('articles.html', newListText, `記事一覧から削除: ${slug}`, list.sha);
+      }
 
       const sm = await ghGet('sitemap.xml');
       if (sm) await ghPut('sitemap.xml', removeSitemap(sm.text, slug), `sitemapから削除: ${slug}`, sm.sha);
+
+      if (newListText) await updateIndexHtml(parseCards(newListText));
 
       return res.status(200).json({ success: true });
     }
