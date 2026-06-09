@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>記事管理 | E-edu</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: #f3f4f6; color: #1f2937; line-height: 1.6;
+    }
+    .topbar {
+      background: #065f46; color: #fff; padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar h1 { font-size: 1.1rem; }
+    .topbar button {
+      background: #047857; color: #fff; border: none; padding: 6px 14px;
+      border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    /* login */
+    .login { max-width: 360px; margin: 80px auto; background: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .login h2 { color: #065f46; text-align: center; margin-bottom: 20px; font-size: 1.1rem; }
+    input, textarea, select {
+      width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px;
+      font-size: 0.95rem; font-family: inherit;
+    }
+    input:focus, textarea:focus { outline: none; border-color: #059669; }
+    .btn { background: #059669; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: bold; }
+    .btn:hover { background: #047857; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-sub { background: #e5e7eb; color: #374151; }
+    .btn-sub:hover { background: #d1d5db; }
+    .btn-danger { background: #dc2626; }
+    .btn-danger:hover { background: #b91c1c; }
+    .err { color: #dc2626; font-size: 0.85rem; margin-top: 8px; }
+    .layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+    @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+    .panel { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+    .panel h3 { color: #065f46; font-size: 1rem; margin-bottom: 14px; }
+    .list-item { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; }
+    .list-item:hover { border-color: #059669; background: #f0fdf4; }
+    .list-item .t { font-size: 0.9rem; font-weight: bold; color: #065f46; }
+    .list-item .m { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.85rem; color: #374151; margin-bottom: 6px; font-weight: bold; }
+    .field .hint { font-weight: normal; color: #9ca3af; font-size: 0.78rem; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .toolbar button { font-size: 0.78rem; padding: 5px 10px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; border-radius: 6px; cursor: pointer; }
+    .toolbar button:hover { background: #d1fae5; }
+    textarea.body { min-height: 360px; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.85rem; }
+    .row { display: flex; gap: 12px; }
+    .row > * { flex: 1; }
+    .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .preview { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 16px; max-height: 420px; overflow: auto; }
+    .preview h4 { color: #9ca3af; font-size: 0.8rem; margin-bottom: 10px; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #065f46; color: #fff; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.2); display: none; }
+    /* article preview styles (簡易) */
+    .pv h1 { font-size: 1.3rem; color: #065f46; margin: 8px 0; }
+    .pv h2 { font-size: 1.1rem; color: #065f46; margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #d1fae5; }
+    .pv h3 { font-size: 1rem; color: #065f46; margin: 14px 0 8px; }
+    .pv p { color: #4b5563; margin-bottom: 12px; }
+    .pv ul, .pv ol { color: #4b5563; padding-left: 22px; margin-bottom: 12px; }
+    .pv .highlight-box { background: #ecfdf5; border-left: 4px solid #059669; border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .pv .example-box, .pv .tip-box { background: #f9fafb; border-radius: 8px; padding: 14px 18px; margin: 16px 0; }
+    .pv .tool-cta { background: linear-gradient(135deg,#ecfdf5,#d1fae5); border-radius: 12px; padding: 20px; text-align: center; margin: 16px 0; }
+    .pv .article-tag { display: inline-block; background: #ecfdf5; color: #059669; font-size: .75rem; font-weight: bold; padding: 3px 10px; border-radius: 99px; }
+  </style>
+</head>
+<body>
+  <!-- ログイン画面 -->
+  <div id="loginView">
+    <div class="login">
+      <h2>記事管理 ログイン</h2>
+      <input type="password" id="pwd" placeholder="管理者パスワード" autocomplete="current-password">
+      <div class="err" id="loginErr"></div>
+      <button class="btn" style="width:100%;margin-top:12px;" onclick="login()">ログイン</button>
+    </div>
+  </div>
+
+  <!-- 管理画面 -->
+  <div id="adminView" style="display:none;">
+    <div class="topbar">
+      <h1>📝 記事管理 — E-edu</h1>
+      <div>
+        <a href="/articles.html" target="_blank" style="color:#a7f3d0;font-size:.85rem;margin-right:14px;">公開ページ ↗</a>
+        <button onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="layout">
+        <!-- 一覧 -->
+        <div class="panel">
+          <h3>記事一覧</h3>
+          <button class="btn" style="width:100%;margin-bottom:14px;" onclick="newArticle()">＋ 新規作成</button>
+          <div id="list"></div>
+        </div>
+
+        <!-- 編集 -->
+        <div class="panel">
+          <h3 id="editTitle">新規作成</h3>
+          <div class="field">
+            <label>タイトル</label>
+            <input id="f_title" oninput="syncSlugHint()">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label>スラッグ <span class="hint">(URL: /article-◯◯.html / 半角英数字-)</span></label>
+              <input id="f_slug" placeholder="例: study-tips">
+            </div>
+            <div class="field">
+              <label>タグ <span class="hint">(例: 特別支援教育)</span></label>
+              <input id="f_tag">
+            </div>
+          </div>
+          <div class="field">
+            <label>メタ説明文 <span class="hint">(検索結果に出る説明・120字程度)</span></label>
+            <textarea id="f_desc" rows="2"></textarea>
+          </div>
+          <div class="field">
+            <label>日付・カテゴリ行 <span class="hint">(記事上部に表示)</span></label>
+            <input id="f_meta" placeholder="例: 2026年6月8日 ／ 特別支援教育・合理的配慮">
+          </div>
+          <div class="field">
+            <label>パンくず末尾 <span class="hint">(一覧 &gt; ◯◯ の部分)</span></label>
+            <input id="f_breadcrumb">
+          </div>
+          <div class="field">
+            <label>本文 <span class="hint">(下のボタンで部品を挿入できます)</span></label>
+            <div class="toolbar">
+              <button onclick="ins('h2')">大見出し</button>
+              <button onclick="ins('h3')">小見出し</button>
+              <button onclick="ins('p')">段落</button>
+              <button onclick="ins('ul')">箇条書き</button>
+              <button onclick="ins('highlight')">ポイント枠</button>
+              <button onclick="ins('example')">事例枠</button>
+              <button onclick="ins('cta')">ツール紹介</button>
+            </div>
+            <textarea id="f_body" class="body"></textarea>
+          </div>
+          <details class="field">
+            <summary style="cursor:pointer;color:#059669;font-size:.85rem;">関連記事HTML（上級・任意）</summary>
+            <textarea id="f_related" rows="5" style="margin-top:8px;font-family:ui-monospace,monospace;font-size:.8rem;"></textarea>
+          </details>
+
+          <div class="actions">
+            <button class="btn" id="saveBtn" onclick="save()">保存して公開</button>
+            <button class="btn btn-sub" onclick="togglePreview()">プレビュー</button>
+            <button class="btn btn-danger" id="delBtn" style="display:none;" onclick="del()">削除</button>
+          </div>
+          <div class="err" id="editErr"></div>
+
+          <div class="preview" id="previewBox" style="display:none;">
+            <h4>プレビュー</h4>
+            <div class="pv" id="previewContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const PWD_KEY = 'eedu-admin-pwd';
+    let currentSlug = null; // 編集中の既存スラッグ（新規は null）
+
+    const $ = (id) => document.getElementById(id);
+    const getPwd = () => localStorage.getItem(PWD_KEY) || '';
+    function toast(msg) { const t=$('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); }
+
+    // ---- 認証 ----
+    async function login() {
+      $('loginErr').textContent = '';
+      const pwd = $('pwd').value;
+      try {
+        const res = await fetch('/api/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password:pwd}) });
+        if (res.ok) { localStorage.setItem(PWD_KEY, pwd); showAdmin(); }
+        else { const d = await res.json(); $('loginErr').textContent = d.error || 'ログインに失敗しました'; }
+      } catch { $('loginErr').textContent = '通信エラー'; }
+    }
+    function logout() { localStorage.removeItem(PWD_KEY); location.reload(); }
+
+    async function checkAuth() {
+      const pwd = getPwd();
+      if (!pwd) return false;
+      try {
+        const res = await fetch('/api/auth', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({password:pwd}) });
+        return res.ok;
+      } catch { return false; }
+    }
+
+    async function showAdmin() {
+      $('loginView').style.display = 'none';
+      $('adminView').style.display = 'block';
+      await loadList();
+      newArticle();
+    }
+
+    // ---- 一覧 ----
+    async function loadList() {
+      const res = await fetch('/api/articles?action=list');
+      const items = await res.json();
+      const html = items.map(it => `
+        <div class="list-item" onclick="loadArticle('${it.slug}')">
+          <div class="t">${escapeHtml(it.title)}</div>
+          <div class="m">${escapeHtml(it.tag)} ／ ${escapeHtml(it.meta)}</div>
+        </div>`).join('');
+      $('list').innerHTML = html || '<p style="color:#9ca3af;font-size:.85rem;">記事がありません</p>';
+    }
+
+    function newArticle() {
+      currentSlug = null;
+      $('editTitle').textContent = '新規作成';
+      $('f_title').value=''; $('f_slug').value=''; $('f_tag').value='';
+      $('f_desc').value=''; $('f_meta').value=''; $('f_breadcrumb').value='';
+      $('f_body').value=''; $('f_related').value='';
+      $('f_slug').disabled = false;
+      $('delBtn').style.display = 'none';
+      $('previewBox').style.display = 'none';
+      $('editErr').textContent = '';
+    }
+
+    async function loadArticle(slug) {
+      $('editErr').textContent = '';
+      const res = await fetch('/api/articles?action=get&slug=' + encodeURIComponent(slug));
+      if (!res.ok) { toast('読み込み失敗'); return; }
+      const a = await res.json();
+      currentSlug = slug;
+      $('editTitle').textContent = '編集: ' + slug;
+      $('f_title').value = a.title || '';
+      $('f_slug').value = a.slug || ''; $('f_slug').disabled = true;
+      $('f_tag').value = a.tag || '';
+      $('f_desc').value = a.description || '';
+      $('f_meta').value = a.metaLine || '';
+      $('f_breadcrumb').value = a.breadcrumb || '';
+      $('f_body').value = a.bodyHtml || '';
+      $('f_related').value = a.relatedHtml || '';
+      $('delBtn').style.display = 'inline-block';
+      $('previewBox').style.display = 'none';
+      window.scrollTo(0,0);
+    }
+
+    function syncSlugHint() {
+      if (currentSlug) return;
+      if (!$('f_breadcrumb').value) $('f_breadcrumb').value = $('f_title').value;
+    }
+
+    // ---- 本文部品の挿入 ----
+    const SNIPPETS = {
+      h2: '      <h2>見出し</h2>\n',
+      h3: '      <h3>小見出し</h3>\n',
+      p:  '      <p>本文をここに書きます。</p>\n',
+      ul: '      <ul>\n        <li>項目1</li>\n        <li>項目2</li>\n      </ul>\n',
+      highlight: '      <div class="highlight-box">\n        <p><strong>ポイント：</strong>強調したい内容。</p>\n      </div>\n',
+      example: '      <div class="example-box">\n        <h4>実践例：タイトル</h4>\n        <p>事例の内容。</p>\n      </div>\n',
+      cta: '      <div class="tool-cta">\n        <h3>ツール名で○○</h3>\n        <p>ツールの説明。</p>\n        <a href="https://furigana.e-edu.jp/" target="_blank" rel="noopener noreferrer">使ってみる →</a>\n      </div>\n'
+    };
+    function ins(kind) {
+      const ta = $('f_body');
+      const snip = SNIPPETS[kind];
+      const start = ta.selectionStart;
+      ta.value = ta.value.slice(0, start) + snip + ta.value.slice(ta.selectionEnd);
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = start + snip.length;
+    }
+
+    function collect() {
+      return {
+        slug: $('f_slug').value.trim(),
+        title: $('f_title').value.trim(),
+        description: $('f_desc').value.trim(),
+        tag: $('f_tag').value.trim(),
+        metaLine: $('f_meta').value.trim(),
+        breadcrumb: ($('f_breadcrumb').value || $('f_title').value).trim(),
+        bodyHtml: $('f_body').value,
+        relatedHtml: $('f_related').value
+      };
+    }
+
+    function togglePreview() {
+      const box = $('previewBox');
+      if (box.style.display === 'none') {
+        const a = collect();
+        $('previewContent').innerHTML =
+          `<span class="article-tag">${escapeHtml(a.tag)}</span><h1>${escapeHtml(a.title)}</h1>` + a.bodyHtml;
+        box.style.display = 'block';
+      } else { box.style.display = 'none'; }
+    }
+
+    async function save() {
+      $('editErr').textContent = '';
+      const a = collect();
+      if (!a.title) { $('editErr').textContent = 'タイトルを入力してください'; return; }
+      if (!/^[a-z0-9-]+$/.test(a.slug)) { $('editErr').textContent = 'スラッグは半角英数字とハイフンのみです'; return; }
+      $('saveBtn').disabled = true; $('saveBtn').textContent = '保存中...';
+      try {
+        const res = await fetch('/api/articles', {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + getPwd() },
+          body: JSON.stringify(a)
+        });
+        const d = await res.json();
+        if (res.ok) {
+          toast('保存しました（数分後に公開反映）');
+          currentSlug = a.slug; $('f_slug').disabled = true; $('delBtn').style.display='inline-block';
+          $('editTitle').textContent = '編集: ' + a.slug;
+          await loadList();
+        } else { $('editErr').textContent = d.error || '保存に失敗しました'; }
+      } catch { $('editErr').textContent = '通信エラー'; }
+      finally { $('saveBtn').disabled = false; $('saveBtn').textContent = '保存して公開'; }
+    }
+
+    async function del() {
+      if (!currentSlug) return;
+      if (!confirm(`「${currentSlug}」を削除しますか？`)) return;
+      try {
+        const res = await fetch('/api/articles', {
+          method: 'DELETE',
+          headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + getPwd() },
+          body: JSON.stringify({ slug: currentSlug })
+        });
+        if (res.ok) { toast('削除しました'); newArticle(); await loadList(); }
+        else { const d = await res.json(); $('editErr').textContent = d.error || '削除に失敗'; }
+      } catch { $('editErr').textContent = '通信エラー'; }
+    }
+
+    function escapeHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // ---- 初期化 ----
+    $('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+    (async () => { if (await checkAuth()) showAdmin(); })();
+  </script>
+</body>
+</html>
