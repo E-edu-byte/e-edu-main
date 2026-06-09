@@ -53,6 +53,16 @@
     .toolbar button { font-size: 0.78rem; padding: 5px 10px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; border-radius: 6px; cursor: pointer; }
     .toolbar button:hover { background: #d1fae5; }
     textarea.body { min-height: 360px; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.85rem; }
+    /* WYSIWYG エディタ（記事の見た目で編集） */
+    .editor {
+      min-height: 360px; border: 1px solid #d1d5db; border-radius: 8px;
+      padding: 20px 24px; background: #fff; overflow-y: auto; max-height: 600px;
+    }
+    .editor:focus { outline: none; border-color: #059669; }
+    .editor:empty:before { content: "ここに本文を入力します"; color: #9ca3af; }
+    .editor [contenteditable="false"] { }
+    .editor .highlight-box, .editor .example-box, .editor .tip-box, .editor .tool-cta { position: relative; }
+    .src { min-height: 360px; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 0.83rem; }
     .row { display: flex; gap: 12px; }
     .row > * { flex: 1; }
     .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
@@ -130,17 +140,21 @@
             <input id="f_breadcrumb">
           </div>
           <div class="field">
-            <label>本文 <span class="hint">(下のボタンで部品を挿入できます)</span></label>
+            <label>本文 <span class="hint">(下のボタンで装飾できます。見たまま編集できます)</span></label>
             <div class="toolbar">
-              <button onclick="ins('h2')">大見出し</button>
-              <button onclick="ins('h3')">小見出し</button>
-              <button onclick="ins('p')">段落</button>
-              <button onclick="ins('ul')">箇条書き</button>
-              <button onclick="ins('highlight')">ポイント枠</button>
-              <button onclick="ins('example')">事例枠</button>
-              <button onclick="ins('cta')">ツール紹介</button>
+              <button onclick="fmt('h2')">大見出し</button>
+              <button onclick="fmt('h3')">小見出し</button>
+              <button onclick="fmt('p')">段落</button>
+              <button onclick="exec('bold')"><b>太字</b></button>
+              <button onclick="exec('insertUnorderedList')">箇条書き</button>
+              <button onclick="addLink()">リンク</button>
+              <button onclick="insBox('highlight')">ポイント枠</button>
+              <button onclick="insBox('example')">事例枠</button>
+              <button onclick="insBox('cta')">ツール紹介</button>
+              <button onclick="toggleSrc()" id="srcBtn" style="margin-left:auto;background:#f3f4f6;color:#6b7280;border-color:#d1d5db;">HTMLソース</button>
             </div>
-            <textarea id="f_body" class="body"></textarea>
+            <div id="f_body_editor" class="editor pv" contenteditable="true"></div>
+            <textarea id="f_body_src" class="src" style="display:none;width:100%;"></textarea>
           </div>
           <details class="field">
             <summary style="cursor:pointer;color:#059669;font-size:.85rem;">関連記事HTML（上級・任意）</summary>
@@ -149,15 +163,9 @@
 
           <div class="actions">
             <button class="btn" id="saveBtn" onclick="save()">保存して公開</button>
-            <button class="btn btn-sub" onclick="togglePreview()">プレビュー</button>
             <button class="btn btn-danger" id="delBtn" style="display:none;" onclick="del()">削除</button>
           </div>
           <div class="err" id="editErr"></div>
-
-          <div class="preview" id="previewBox" style="display:none;">
-            <h4>プレビュー</h4>
-            <div class="pv" id="previewContent"></div>
-          </div>
         </div>
       </div>
     </div>
@@ -218,10 +226,10 @@
       $('editTitle').textContent = '新規作成';
       $('f_title').value=''; $('f_slug').value=''; $('f_tag').value='';
       $('f_desc').value=''; $('f_meta').value=''; $('f_breadcrumb').value='';
-      $('f_body').value=''; $('f_related').value='';
+      setBody(''); $('f_related').value='';
+      if (srcMode) toggleSrc();
       $('f_slug').disabled = false;
       $('delBtn').style.display = 'none';
-      $('previewBox').style.display = 'none';
       $('editErr').textContent = '';
     }
 
@@ -238,10 +246,10 @@
       $('f_desc').value = a.description || '';
       $('f_meta').value = a.metaLine || '';
       $('f_breadcrumb').value = a.breadcrumb || '';
-      $('f_body').value = a.bodyHtml || '';
+      if (srcMode) toggleSrc();
+      setBody(a.bodyHtml || '');
       $('f_related').value = a.relatedHtml || '';
       $('delBtn').style.display = 'inline-block';
-      $('previewBox').style.display = 'none';
       window.scrollTo(0,0);
     }
 
@@ -250,23 +258,51 @@
       if (!$('f_breadcrumb').value) $('f_breadcrumb').value = $('f_title').value;
     }
 
-    // ---- 本文部品の挿入 ----
-    const SNIPPETS = {
-      h2: '      <h2>見出し</h2>\n',
-      h3: '      <h3>小見出し</h3>\n',
-      p:  '      <p>本文をここに書きます。</p>\n',
-      ul: '      <ul>\n        <li>項目1</li>\n        <li>項目2</li>\n      </ul>\n',
-      highlight: '      <div class="highlight-box">\n        <p><strong>ポイント：</strong>強調したい内容。</p>\n      </div>\n',
-      example: '      <div class="example-box">\n        <h4>実践例：タイトル</h4>\n        <p>事例の内容。</p>\n      </div>\n',
-      cta: '      <div class="tool-cta">\n        <h3>ツール名で○○</h3>\n        <p>ツールの説明。</p>\n        <a href="https://furigana.e-edu.jp/" target="_blank" rel="noopener noreferrer">使ってみる →</a>\n      </div>\n'
+    // ---- WYSIWYG エディタ ----
+    const editor = () => $('f_body_editor');
+    let srcMode = false;
+
+    function setBody(html) {
+      $('f_body_editor').innerHTML = (html && html.trim()) ? html : '<p><br></p>';
+      $('f_body_src').value = html || '';
+    }
+    function getBody() {
+      if (srcMode) return $('f_body_src').value;
+      return $('f_body_editor').innerHTML;
+    }
+
+    // 装飾コマンド
+    function exec(cmd) { document.execCommand(cmd, false, null); editor().focus(); }
+    function fmt(tag) { document.execCommand('formatBlock', false, tag); editor().focus(); }
+    function addLink() {
+      const url = prompt('リンク先URLを入力してください', 'https://');
+      if (url) document.execCommand('createLink', false, url);
+      editor().focus();
+    }
+    const BOXES = {
+      highlight: '<div class="highlight-box"><p><strong>ポイント：</strong>強調したい内容をここに書きます。</p></div><p><br></p>',
+      example:   '<div class="example-box"><h4>実践例：タイトル</h4><p>事例の内容をここに書きます。</p></div><p><br></p>',
+      cta:        '<div class="tool-cta"><h3>ツール名で○○</h3><p>ツールの説明をここに書きます。</p><a href="https://furigana.e-edu.jp/" target="_blank" rel="noopener noreferrer">使ってみる →</a></div><p><br></p>'
     };
-    function ins(kind) {
-      const ta = $('f_body');
-      const snip = SNIPPETS[kind];
-      const start = ta.selectionStart;
-      ta.value = ta.value.slice(0, start) + snip + ta.value.slice(ta.selectionEnd);
-      ta.focus();
-      ta.selectionStart = ta.selectionEnd = start + snip.length;
+    function insBox(kind) {
+      editor().focus();
+      document.execCommand('insertHTML', false, BOXES[kind]);
+    }
+
+    // HTMLソース表示の切り替え
+    function toggleSrc() {
+      srcMode = !srcMode;
+      if (srcMode) {
+        $('f_body_src').value = $('f_body_editor').innerHTML;
+        $('f_body_src').style.display = 'block';
+        $('f_body_editor').style.display = 'none';
+        $('srcBtn').textContent = '見たまま編集';
+      } else {
+        $('f_body_editor').innerHTML = $('f_body_src').value || '<p><br></p>';
+        $('f_body_src').style.display = 'none';
+        $('f_body_editor').style.display = 'block';
+        $('srcBtn').textContent = 'HTMLソース';
+      }
     }
 
     function collect() {
@@ -277,19 +313,9 @@
         tag: $('f_tag').value.trim(),
         metaLine: $('f_meta').value.trim(),
         breadcrumb: ($('f_breadcrumb').value || $('f_title').value).trim(),
-        bodyHtml: $('f_body').value,
+        bodyHtml: getBody(),
         relatedHtml: $('f_related').value
       };
-    }
-
-    function togglePreview() {
-      const box = $('previewBox');
-      if (box.style.display === 'none') {
-        const a = collect();
-        $('previewContent').innerHTML =
-          `<span class="article-tag">${escapeHtml(a.tag)}</span><h1>${escapeHtml(a.title)}</h1>` + a.bodyHtml;
-        box.style.display = 'block';
-      } else { box.style.display = 'none'; }
     }
 
     async function save() {
@@ -332,6 +358,13 @@
     function escapeHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
     // ---- 初期化 ----
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch(e) {}
+    // 貼り付けは書式を除去してプレーンテキスト化（Word等の崩れ防止）
+    $('f_body_editor').addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      document.execCommand('insertText', false, text);
+    });
     $('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
     (async () => { if (await checkAuth()) showAdmin(); })();
   </script>
