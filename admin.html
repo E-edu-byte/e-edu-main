@@ -142,9 +142,12 @@
           <div class="field">
             <label>本文 <span class="hint">(下のボタンで装飾できます。見たまま編集できます)</span></label>
             <div class="toolbar">
+              <button onclick="exec('undo')" title="元に戻す">↩ 元に戻す</button>
+              <button onclick="exec('redo')" title="やり直す">↪ やり直す</button>
+              <span style="width:1px;background:#d1d5db;margin:0 2px;align-self:stretch;display:inline-block;"></span>
+              <button onclick="fmt('p')">通常</button>
               <button onclick="fmt('h2')">大見出し</button>
               <button onclick="fmt('h3')">小見出し</button>
-              <button onclick="fmt('p')">段落</button>
               <button onclick="exec('bold')"><b>太字</b></button>
               <button onclick="exec('insertUnorderedList')">箇条書き</button>
               <button onclick="addLink()">リンク</button>
