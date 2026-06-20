@@ -44,8 +44,11 @@
     .panel h3 { color: #065f46; font-size: 1rem; margin-bottom: 14px; }
     .list-item { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; }
     .list-item:hover { border-color: #059669; background: #f0fdf4; }
+    .list-item.draft { border-color: #fbbf24; background: #fffbeb; }
+    .list-item.draft:hover { border-color: #f59e0b; background: #fef3c7; }
     .list-item .t { font-size: 0.9rem; font-weight: bold; color: #065f46; }
     .list-item .m { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+    .draft-badge { display: inline-block; background: #fbbf24; color: #78350f; font-size: 0.7rem; font-weight: bold; padding: 1px 7px; border-radius: 99px; margin-left: 6px; vertical-align: middle; }
     .field { margin-bottom: 16px; }
     .field label { display: block; font-size: 0.85rem; color: #374151; margin-bottom: 6px; font-weight: bold; }
     .field .hint { font-weight: normal; color: #9ca3af; font-size: 0.78rem; }
@@ -166,6 +169,7 @@
 
           <div class="actions">
             <button class="btn" id="saveBtn" onclick="save()">保存して公開</button>
+            <button class="btn btn-sub" id="draftBtn" onclick="saveDraft()">下書き保存</button>
             <button class="btn btn-danger" id="delBtn" style="display:none;" onclick="del()">削除</button>
           </div>
           <div class="err" id="editErr"></div>
@@ -217,8 +221,8 @@
       const res = await fetch('/api/articles?action=list');
       const items = await res.json();
       const html = items.map(it => `
-        <div class="list-item" onclick="loadArticle('${it.slug}')">
-          <div class="t">${escapeHtml(it.title)}</div>
+        <div class="list-item${it.draft ? ' draft' : ''}" onclick="loadArticle('${it.slug}', ${!!it.draft})">
+          <div class="t">${escapeHtml(it.title)}${it.draft ? '<span class="draft-badge">下書き</span>' : ''}</div>
           <div class="m">${escapeHtml(it.tag)} ／ ${escapeHtml(it.meta)}</div>
         </div>`).join('');
       $('list').innerHTML = html || '<p style="color:#9ca3af;font-size:.85rem;">記事がありません</p>';
@@ -226,6 +230,7 @@
 
     function newArticle() {
       currentSlug = null;
+      currentIsDraft = false;
       $('editTitle').textContent = '新規作成';
       $('f_title').value=''; $('f_slug').value=''; $('f_tag').value='';
       $('f_desc').value=''; $('f_meta').value=''; $('f_breadcrumb').value='';
@@ -236,13 +241,17 @@
       $('editErr').textContent = '';
     }
 
-    async function loadArticle(slug) {
+    let currentIsDraft = false;
+
+    async function loadArticle(slug, isDraft = false) {
       $('editErr').textContent = '';
-      const res = await fetch('/api/articles?action=get&slug=' + encodeURIComponent(slug));
+      const url = '/api/articles?action=get&slug=' + encodeURIComponent(slug) + (isDraft ? '&draft=1' : '');
+      const res = await fetch(url);
       if (!res.ok) { toast('読み込み失敗'); return; }
       const a = await res.json();
       currentSlug = slug;
-      $('editTitle').textContent = '編集: ' + slug;
+      currentIsDraft = isDraft;
+      $('editTitle').textContent = (isDraft ? '下書き編集: ' : '編集: ') + slug;
       $('f_title').value = a.title || '';
       $('f_slug').value = a.slug || ''; $('f_slug').disabled = true;
       $('f_tag').value = a.tag || '';
@@ -254,6 +263,30 @@
       $('f_related').value = a.relatedHtml || '';
       $('delBtn').style.display = 'inline-block';
       window.scrollTo(0,0);
+    }
+
+    async function saveDraft() {
+      $('editErr').textContent = '';
+      const a = collect();
+      if (!a.title) { $('editErr').textContent = 'タイトルを入力してください'; return; }
+      if (!/^[a-z0-9-]+$/.test(a.slug)) { $('editErr').textContent = 'スラッグは半角英数字とハイフンのみです'; return; }
+      $('draftBtn').disabled = true; $('draftBtn').textContent = '保存中...';
+      try {
+        const res = await fetch('/api/articles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getPwd() },
+          body: JSON.stringify({ ...a, draft: true })
+        });
+        const d = await res.json();
+        if (res.ok) {
+          toast('下書きを保存しました');
+          currentSlug = a.slug; currentIsDraft = true;
+          $('f_slug').disabled = true; $('delBtn').style.display = 'inline-block';
+          $('editTitle').textContent = '下書き編集: ' + a.slug;
+          await loadList();
+        } else { $('editErr').textContent = d.error || '保存に失敗しました'; }
+      } catch { $('editErr').textContent = '通信エラー'; }
+      finally { $('draftBtn').disabled = false; $('draftBtn').textContent = '下書き保存'; }
     }
 
     function syncSlugHint() {
@@ -346,12 +379,13 @@
 
     async function del() {
       if (!currentSlug) return;
-      if (!confirm(`「${currentSlug}」を削除しますか？`)) return;
+      const label = currentIsDraft ? `下書き「${currentSlug}」` : `「${currentSlug}」`;
+      if (!confirm(`${label}を削除しますか？`)) return;
       try {
         const res = await fetch('/api/articles', {
           method: 'DELETE',
           headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + getPwd() },
-          body: JSON.stringify({ slug: currentSlug })
+          body: JSON.stringify({ slug: currentSlug, draft: currentIsDraft })
         });
         if (res.ok) { toast('削除しました'); newArticle(); await loadList(); }
         else { const d = await res.json(); $('editErr').textContent = d.error || '削除に失敗'; }

@@ -217,6 +217,35 @@ interface ArticleData {
   breadcrumb: string;
   bodyHtml: string;
   relatedHtml: string;
+  draft?: boolean;
+}
+
+interface DraftIndex {
+  drafts: Array<{ slug: string; title: string; tag: string; meta: string }>;
+}
+
+async function getDraftIndex(): Promise<{ data: DraftIndex; sha: string } | null> {
+  const file = await ghGet('_drafts-index.json');
+  if (!file) return null;
+  try {
+    return { data: JSON.parse(file.text), sha: file.sha };
+  } catch { return null; }
+}
+
+async function saveDraftIndex(data: DraftIndex, sha?: string) {
+  await ghPut('_drafts-index.json', JSON.stringify(data, null, 2),
+    'draft index更新', sha);
+}
+
+async function deleteDraft(slug: string) {
+  const draft = await ghGet(`_draft-${slug}.json`);
+  if (draft) await ghDelete(`_draft-${slug}.json`, `下書き削除: ${slug}`, draft.sha);
+
+  const idx = await getDraftIndex();
+  if (idx) {
+    idx.data.drafts = idx.data.drafts.filter(d => d.slug !== slug);
+    await saveDraftIndex(idx.data, idx.sha);
+  }
 }
 
 function renderArticle(a: ArticleData): string {
@@ -407,12 +436,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const action = (req.query.action as string) || 'list';
       if (action === 'list') {
         const file = await ghGet('articles.html');
-        if (!file) return res.status(200).json([]);
-        return res.status(200).json(parseCards(file.text));
+        const published = file ? parseCards(file.text) : [];
+        const idx = await getDraftIndex();
+        const drafts = (idx?.data.drafts || []).map(d => ({ ...d, draft: true }));
+        // 公開済みと下書きをマージ（下書きが公開済みにもある場合は公開済み側を優先）
+        const publishedSlugs = new Set(published.map(p => p.slug));
+        const draftOnly = drafts.filter(d => !publishedSlugs.has(d.slug));
+        return res.status(200).json([...published, ...draftOnly]);
       }
       if (action === 'get') {
         const slug = req.query.slug as string;
         if (!slug) return res.status(400).json({ error: 'slug が必要です' });
+        if (req.query.draft === '1') {
+          const file = await ghGet(`_draft-${slug}.json`);
+          if (!file) return res.status(404).json({ error: '下書きが見つかりません' });
+          return res.status(200).json(JSON.parse(file.text));
+        }
         const file = await ghGet(`article-${slug}.html`);
         if (!file) return res.status(404).json({ error: '記事が見つかりません' });
         return res.status(200).json(parseArticle(file.text, slug));
@@ -427,6 +466,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const a = req.body as ArticleData;
       if (!a.slug || !a.title) return res.status(400).json({ error: 'slug と title は必須です' });
       if (!/^[a-z0-9-]+$/.test(a.slug)) return res.status(400).json({ error: 'slug は半角英数字とハイフンのみ' });
+
+      // ---- 下書き保存 ----
+      if (a.draft) {
+        const { draft: _, ...data } = a;
+        const existing = await ghGet(`_draft-${a.slug}.json`);
+        await ghPut(`_draft-${a.slug}.json`, JSON.stringify(data, null, 2),
+          `下書き保存: ${a.slug}`, existing?.sha);
+
+        const idx = await getDraftIndex();
+        const entry = { slug: a.slug, title: a.title, tag: a.tag, meta: a.metaLine };
+        if (idx) {
+          const i = idx.data.drafts.findIndex(d => d.slug === a.slug);
+          if (i >= 0) idx.data.drafts[i] = entry; else idx.data.drafts.unshift(entry);
+          await saveDraftIndex(idx.data, idx.sha);
+        } else {
+          await saveDraftIndex({ drafts: [entry] });
+        }
+        return res.status(200).json({ success: true, draft: true });
+      }
 
       const date = todayISO();
 
@@ -454,12 +512,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         await updateIndexHtml(parseCards(newListText));
       }
 
+      // 5) 公開時に下書きがあれば削除
+      await deleteDraft(a.slug);
+
       return res.status(200).json({ success: true, url: `https://e-edu.jp/article-${a.slug}.html` });
     }
 
     if (req.method === 'DELETE') {
       const slug = (req.body?.slug || req.query.slug) as string;
       if (!slug) return res.status(400).json({ error: 'slug が必要です' });
+
+      if (req.body?.draft) {
+        await deleteDraft(slug);
+        return res.status(200).json({ success: true });
+      }
 
       const art = await ghGet(`article-${slug}.html`);
       if (art) await ghDelete(`article-${slug}.html`, `記事削除: ${slug}`, art.sha);
