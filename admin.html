@@ -220,11 +220,22 @@
     async function loadList() {
       const res = await fetch('/api/articles?action=list');
       const items = await res.json();
-      const html = items.map(it => `
+      const drafts = items.filter(it => it.draft);
+      const published = items.filter(it => !it.draft);
+
+      const makeItem = it => `
         <div class="list-item${it.draft ? ' draft' : ''}" onclick="loadArticle('${it.slug}', ${!!it.draft})">
-          <div class="t">${escapeHtml(it.title)}${it.draft ? '<span class="draft-badge">下書き</span>' : ''}</div>
+          <div class="t">${escapeHtml(it.title)}</div>
           <div class="m">${escapeHtml(it.tag)} ／ ${escapeHtml(it.meta)}</div>
-        </div>`).join('');
+        </div>`;
+
+      let html = '';
+      if (drafts.length) {
+        html += `<p style="font-size:.78rem;font-weight:bold;color:#b45309;margin-bottom:6px;">✏️ 下書き（${drafts.length}件）</p>`;
+        html += drafts.map(makeItem).join('');
+        html += `<hr style="border:none;border-top:1px solid #e5e7eb;margin:10px 0;">`;
+      }
+      html += published.map(makeItem).join('');
       $('list').innerHTML = html || '<p style="color:#9ca3af;font-size:.85rem;">記事がありません</p>';
     }
 
