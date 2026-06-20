@@ -292,6 +292,11 @@
     function syncSlugHint() {
       if (currentSlug) return;
       if (!$('f_breadcrumb').value) $('f_breadcrumb').value = $('f_title').value;
+      if (!$('f_slug').value) {
+        const now = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        $('f_slug').value = `article-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+      }
     }
 
     // ---- WYSIWYG エディタ ----
