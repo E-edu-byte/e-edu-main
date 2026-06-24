@@ -143,6 +143,26 @@
       color: #6b7280;
       margin-bottom: 0;
     }
+    /* 記事セクション（主役・カード型） */
+    .articles-section { margin-bottom: 48px; }
+    .articles-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .articles-head h2 { font-size: 1.6rem; color: #065f46; }
+    .articles-head a { color: #059669; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+    .articles-head a:hover { text-decoration: underline; }
+    .articles-desc { color: #6b7280; font-size: 0.95rem; margin-bottom: 24px; }
+    .article-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 20px; }
+    .article-grid a.article-card {
+      background: white; border-radius: 14px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-decoration: none;
+      display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .article-grid a.article-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+    .article-grid .article-tag {
+      display: inline-block; align-self: flex-start; background: #ecfdf5; color: #059669;
+      font-size: 0.75rem; font-weight: bold; padding: 4px 12px; border-radius: 99px; margin-bottom: 12px;
+    }
+    .article-grid h3 { font-size: 1.05rem; color: #065f46; margin-bottom: 10px; line-height: 1.5; }
+    .article-grid p { color: #4b5563; line-height: 1.7; font-size: 0.9rem; margin-bottom: 0; }
     .tools {
       margin-bottom: 40px;
     }
@@ -405,6 +425,53 @@
       </div>
     </section>
 
+    <section class="articles-section">
+      <div class="articles-head">
+        <h2>教育記事・ガイド</h2>
+        <a href="/articles.html">記事一覧をすべて見る →</a>
+      </div>
+      <p class="articles-desc">特別支援教育・インクルーシブ教育の現場で役立つ実践情報を、専門家がわかりやすく解説します。</p>
+      <div class="article-grid">
+        <!-- ARTICLES:START -->
+        <a href="/article-article-20260624-1028.html" class="article-card">
+          <span class="article-tag">特別支援教育</span>
+          <h3>特別支援学級の児童生徒数が増えていること</h3>
+          <p>特別支援学級に在籍する児童生徒数の増加をどう捉えるか、変わらない学校の問題を「障害の社会モデル」を通して考えます。</p>
+        </a>
+
+        <a href="/article-reasonable-accommodation.html" class="article-card">
+          <span class="article-tag">特別支援教育</span>
+          <h3>合理的配慮とは？学校現場での実践方法</h3>
+          <p>2016年の障害者差別解消法以降、学校に求められる合理的配慮。申出への向き合い方や「ずるい」という声への対応など、現場の視点も交えて解説します。</p>
+        </a>
+
+        <a href="/article-furigana-guide.html" class="article-card">
+          <span class="article-tag">ふりがな支援</span>
+          <h3>教材・テストにふりがなを付ける方法：使い方と効果</h3>
+          <p>読み書き困難のある子どもへの合理的配慮として有効なふりがな付与。無料ツールでPDFに自動付与する手順と効果を解説します。</p>
+        </a>
+
+        <a href="/article-dyslexia.html" class="article-card">
+          <span class="article-tag">特別支援教育</span>
+          <h3>ディスレクシア（読み書き障害）の特徴と学校でできる支援</h3>
+          <p>知的な遅れがないのに読み書きに困難がある状態。その特徴・背景と、ふりがな・音声読み上げ・タイピングなど学校でできる支援を解説します。</p>
+        </a>
+
+        <a href="/article-udl.html" class="article-card">
+          <span class="article-tag">インクルーシブ教育</span>
+          <h3>UDL（学びのユニバーサルデザイン）とは？学校での実践</h3>
+          <p>最初から誰もが学びにアクセスできるよう授業・教材を設計する考え方。3原則と通常学級での具体的な実践例を紹介します。</p>
+        </a>
+
+        <a href="/article-inclusive-classroom.html" class="article-card">
+          <span class="article-tag">インクルーシブ教育</span>
+          <h3>通常学級でできるインクルーシブ教育の工夫10選</h3>
+          <p>授業の見通しを示す、指示を短くする、ふりがなを付ける——担任が今日から実践できる工夫を10の視点から紹介します。</p>
+        </a>
+        <!-- ARTICLES:END -->
+      </div>
+    </section>
+
     <section class="tools">
       <h2>無料ツール</h2>
 
@@ -500,27 +567,6 @@
         <h3>Q. 商用利用はできますか？</h3>
         <p>はい、商用利用も可能です。学校、塾、企業など、どなたでも自由にご利用いただけます。</p>
       </div>
-    </section>
-
-    <section class="faq-section">
-      <h2>教育記事・ガイド</h2>
-      <!-- ARTICLES:START -->
-      <div class="faq-item">
-        <h3><a href="/article-article-20260624-1028.html" style="color:#065f46;text-decoration:none;">特別支援学級の児童生徒数が増えていること（2026年6月24日）</a></h3>
-        <p>特別支援学級に在籍する児童生徒数の増加をどう捉えるか、社会が変化しているにも関わらず、変わらない学校の問題について「障害の社会モデル」を通して考えます。<a href="/article-article-20260624-1028.html" style="color:#059669;">続きを読む →</a></p>
-      </div>
-
-      <div class="faq-item">
-        <h3><a href="/article-reasonable-accommodation.html" style="color:#065f46;text-decoration:none;">合理的配慮とは？学校現場での実践方法</a></h3>
-        <p>障害のある子どもへの合理的配慮について、ふりがな付与・読み上げ支援など学校現場での具体的な実践方法を特別支援教育の専門家がわかりやすく解説します。<a href="/article-reasonable-accommodation.html" style="color:#059669;">続きを読む →</a></p>
-      </div>
-
-      <div class="faq-item">
-        <h3><a href="/article-furigana-guide.html" style="color:#065f46;text-decoration:none;">教材・テストにふりがなを付ける方法：ふりがなメーカーの使い方と効果</a></h3>
-        <p>読み書き困難のある子どもへの合理的配慮として、PDFにふりがなを自動付与できる無料ツール「ふりがなメーカー」の使い方を手順付きで解説。学年別フィルターなど便利な機能も紹介。<a href="/article-furigana-guide.html" style="color:#059669;">続きを読む →</a></p>
-      </div>
-      <!-- ARTICLES:END -->
-      <p style="text-align:center;margin-top:8px;"><a href="/articles.html" style="color:#059669;font-weight:bold;">記事一覧をすべて見る →</a></p>
     </section>
 
     <section class="about-section">

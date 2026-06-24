@@ -352,20 +352,21 @@ function parseCards(html: string): Array<{ slug: string; title: string; tag: str
 }
 
 // トップページ（index.html）の記事紹介セクションを生成
-const TOP_N = 3;
-function buildIndexSection(cards: Array<{ slug: string; title: string; description: string }>): string {
-  return cards.slice(0, TOP_N).map(c => `      <div class="faq-item">
-        <h3><a href="/article-${c.slug}.html" style="color:#065f46;text-decoration:none;">${esc(c.title)}</a></h3>
-        <p>${esc(c.description)}<a href="/article-${c.slug}.html" style="color:#059669;">続きを読む →</a></p>
-      </div>`).join('\n\n');
+const TOP_N = 6;
+function buildIndexSection(cards: Array<{ slug: string; title: string; description: string; tag: string }>): string {
+  return cards.slice(0, TOP_N).map(c => `        <a href="/article-${c.slug}.html" class="article-card">
+          <span class="article-tag">${esc(c.tag)}</span>
+          <h3>${esc(c.title)}</h3>
+          <p>${esc(c.description)}</p>
+        </a>`).join('\n\n');
 }
-async function updateIndexHtml(cards: Array<{ slug: string; title: string; description: string }>) {
+async function updateIndexHtml(cards: Array<{ slug: string; title: string; description: string; tag: string }>) {
   const idx = await ghGet('index.html');
   if (!idx) return;
   const marker = /(<!-- ARTICLES:START -->)[\s\S]*?(<!-- ARTICLES:END -->)/;
   if (!marker.test(idx.text)) return; // マーカーが無ければ何もしない
   const section = buildIndexSection(cards);
-  const next = idx.text.replace(marker, `$1\n${section}\n      $2`);
+  const next = idx.text.replace(marker, `$1\n${section}\n        $2`);
   if (next !== idx.text) {
     await ghPut('index.html', next, 'トップページ記事欄を更新', idx.sha);
   }
