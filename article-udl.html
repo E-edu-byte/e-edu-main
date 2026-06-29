@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -123,21 +123,92 @@
     footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
     footer p { color: #6b7280; font-size: 0.9rem; }
     footer nav { margin-top: 16px; }
+      /* 固定メニューボタン */
+    .menu-btn {
+      position: fixed;
+      top: 3px;
+      right: 16px;
+      z-index: 1000;
+      background: #059669;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-btn:hover { background: #047857; }
+    /* ドロップダウンメニュー */
+    .dropdown-menu {
+      position: fixed;
+      top: 68px;
+      right: 16px;
+      z-index: 999;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 12px 0;
+      display: none;
+      min-width: 180px;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-menu a {
+      display: block;
+      padding: 10px 20px;
+      color: #065f46;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .dropdown-menu a:hover { background: #ecfdf5; }
+    /* トップナビバー */
+    .top-nav {
+      background: white;
+      border-bottom: 1px solid #d1fae5;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      margin-bottom: 0;
+    }
+    .top-nav a {
+      color: #059669;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .top-nav a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
+  <!-- 固定メニューボタン -->
+  <button class="menu-btn" onclick="document.querySelector('.dropdown-menu').classList.toggle('open')" aria-label="メニュー">☰</button>
+  <div class="dropdown-menu">
+    <a href="/">ホーム</a>
+    <a href="/articles.html">記事・ガイド</a>
+    <a href="/about.html">運営者情報</a>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <a href="/terms.html">利用規約</a>
+    <a href="/contact.html">お問い合わせ</a>
+    <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
+  </div>
+
+  <!-- トップナビバー -->
+  <nav class="top-nav">
+    <a href="/">ホーム</a>
+    <a href="/articles.html">記事・ガイド</a>
+    <a href="/about.html">運営者情報</a>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <a href="/terms.html">利用規約</a>
+    <a href="/contact.html">お問い合わせ</a>
+    <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
+  </nav>
   <div class="container">
-    <header>
-      <div class="logo"><a href="/">E-edu</a></div>
-      <nav>
-        <a href="/">ホーム</a>
-        <a href="/articles.html">記事・ガイド</a>
-        <a href="/about.html">運営者情報</a>
-        <a href="/privacy.html">プライバシーポリシー</a>
-        <a href="/terms.html">利用規約</a>
-        <a href="/contact.html">お問い合わせ</a>
-      </nav>
-    </header>
+    <header></header>
 
     <p class="breadcrumb"><a href="/">ホーム</a> &gt; <a href="/articles.html">記事・ガイド</a> &gt; UDL（学びのユニバーサルデザイン）とは？</p>
 
