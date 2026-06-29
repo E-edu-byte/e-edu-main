@@ -66,7 +66,7 @@
     .container {
       max-width: 900px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 24px 20px 40px;
     }
     header {
       text-align: center;
@@ -396,11 +396,21 @@
     <img src="/hero.png" alt="E-edu 教育現場のための無料Webツール" style="width:100%;display:block;">
   </div>
 
-  <div class="container">
-    <header>
-    </header>
+  <!-- E-eduサポーター -->
+  <div id="supporters-box" style="display:none;max-width:900px;margin:24px auto 0;padding:0 20px;">
+    <div style="background:linear-gradient(135deg,#fff7ed,#fffbeb);border-radius:14px;border:1px solid #fed7aa;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+        <span style="font-size:1.2rem;">❤️</span>
+        <span style="font-weight:bold;color:#9a3412;font-size:0.95rem;">E-eduサポーター</span>
+        <span style="font-size:0.8rem;color:#78716c;">応援いただいたサポーターの皆さま</span>
+        <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;color:#ea580c;margin-left:auto;text-decoration:underline;">サイト運営を応援する</a>
+      </div>
+      <div id="supporters-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+  </div>
 
-    <section class="hero">
+  <div class="container">
+    <section class="hero" style="margin-top:0;">
       <h2>すべての子どもたちが学びにアクセスできる環境をつくりたい</h2>
       <p>E-eduは、特別支援教育・インクルーシブ教育を専門とする研究者が運営する、<br>教育現場のための無料Webツールサービスです。</p>
       <div class="features">
@@ -599,6 +609,30 @@
       <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
     </nav>
   </footer>
+  <script>
+    (async function() {
+      try {
+        const url = 'https://uckogseelvlyhkxwisgc.supabase.co/rest/v1/furigana_announcements?type=eq.supporter&is_active=eq.true&order=created_at.asc';
+        const res = await fetch(url, {
+          headers: {
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVja29nc2VlbHZseWhreHdpc2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyMDMzMzQsImV4cCI6MjA4Njc3OTMzNH0.f23dClG9Y061Ar5q6MPMy4RT_cS1i0kEpZ89Yi35NuE',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVja29nc2VlbHZseWhreHdpc2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyMDMzMzQsImV4cCI6MjA4Njc3OTMzNH0.f23dClG9Y061Ar5q6MPMy4RT_cS1i0kEpZ89Yi35NuE'
+          }
+        });
+        if (!res.ok) return;
+        const supporters = await res.json();
+        if (!supporters || supporters.length === 0) return;
+        const list = document.getElementById('supporters-list');
+        supporters.forEach(function(s) {
+          const span = document.createElement('span');
+          span.textContent = s.content;
+          span.style.cssText = 'display:inline-block;background:white;border:1px solid #fed7aa;border-radius:99px;padding:4px 14px;font-size:0.9rem;color:#44403c;';
+          list.appendChild(span);
+        });
+        document.getElementById('supporters-box').style.display = 'block';
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
 
