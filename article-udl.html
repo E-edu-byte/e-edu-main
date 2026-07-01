@@ -84,7 +84,16 @@
       margin: 24px 0;
     }
     .example-box h4 { color: #065f46; font-size: 0.95rem; margin-bottom: 10px; }
-    .example-box p { font-size: 0.95rem; margin-bottom: 0; }
+    .example-box p, .example-box ul { font-size: 0.95rem; margin-bottom: 0; }
+    .tip-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      border-left: 3px solid #d1fae5;
+    }
+    .tip-box h4 { color: #065f46; font-size: 1rem; margin-bottom: 8px; }
+    .tip-box p { font-size: 0.95rem; margin-bottom: 0; }
     .tool-cta {
       background: linear-gradient(135deg, #ecfdf5, #d1fae5);
       border-radius: 12px;
@@ -123,101 +132,30 @@
     footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
     footer p { color: #6b7280; font-size: 0.9rem; }
     footer nav { margin-top: 16px; }
-      /* 固定メニューボタン */
-    .menu-btn {
-      position: fixed;
-      top: 3px;
-      right: 16px;
-      z-index: 1000;
-      background: #059669;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      width: 40px;
-      height: 40px;
-      font-size: 1.3rem;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .menu-btn:hover { background: #047857; }
-    /* ドロップダウンメニュー */
-    .dropdown-menu {
-      position: fixed;
-      top: 68px;
-      right: 16px;
-      z-index: 999;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      padding: 12px 0;
-      display: none;
-      min-width: 180px;
-    }
-    .dropdown-menu.open { display: block; }
-    .dropdown-menu a {
-      display: block;
-      padding: 10px 20px;
-      color: #065f46;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-    .dropdown-menu a:hover { background: #ecfdf5; }
-    /* トップナビバー */
-    .top-nav {
-      background: white;
-      border-bottom: 1px solid #d1fae5;
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      padding: 12px 20px;
-      margin-bottom: 0;
-    }
-    .top-nav a {
-      color: #059669;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-    .top-nav a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <!-- 固定メニューボタン -->
-  <button class="menu-btn" onclick="document.querySelector('.dropdown-menu').classList.toggle('open')" aria-label="メニュー">☰</button>
-  <div class="dropdown-menu">
-    <a href="/">ホーム</a>
-    <a href="/articles.html">記事・ガイド</a>
-    <a href="/about.html">運営者情報</a>
-    <a href="/privacy.html">プライバシーポリシー</a>
-    <a href="/terms.html">利用規約</a>
-    <a href="/contact.html">お問い合わせ</a>
-    <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
-  </div>
-
-  <!-- トップナビバー -->
-  <nav class="top-nav">
-    <a href="/">ホーム</a>
-    <a href="/articles.html">記事・ガイド</a>
-    <a href="/about.html">運営者情報</a>
-    <a href="/privacy.html">プライバシーポリシー</a>
-    <a href="/terms.html">利用規約</a>
-    <a href="/contact.html">お問い合わせ</a>
-    <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
-  </nav>
   <div class="container">
-    <header></header>
+    <header>
+      <div class="logo"><a href="/">E-edu</a></div>
+      <nav>
+        <a href="/">ホーム</a>
+        <a href="/articles.html">記事・ガイド</a>
+        <a href="/about.html">運営者情報</a>
+        <a href="/privacy.html">プライバシーポリシー</a>
+        <a href="/terms.html">利用規約</a>
+        <a href="/contact.html">お問い合わせ</a>
+      </nav>
+    </header>
 
     <p class="breadcrumb"><a href="/">ホーム</a> &gt; <a href="/articles.html">記事・ガイド</a> &gt; UDL（学びのユニバーサルデザイン）とは？</p>
 
     <article class="article">
       <span class="article-tag">インクルーシブ教育</span>
       <h1>UDL（学びのユニバーサルデザイン）とは？学校での実践をわかりやすく解説</h1>
-      <p class="article-meta">2026年5月30日 ／ UDL・インクルーシブ教育・特別支援教育</p>
+      <p class="article-meta">2026年5月30日</p>
 
-      <p>「UDL」という言葉を聞いたことがあるでしょうか。UDL（Universal Design for Learning：学びのユニバーサルデザイン）は、すべての子どもが学びにアクセスできるよう、授業や教材の設計段階から多様な選択肢を用意するという考え方です。特定の子どものために後から配慮を加えるのではなく、最初から誰もが学びやすい環境をつくるという点で、合理的配慮とは補完的な関係にあります。本記事では、UDLの基本的な考え方と、学校現場での実践例を紹介します。</p>
+<p>「UDL」という言葉を聞いたことがあるでしょうか。UDL（Universal Design for Learning：学びのユニバーサルデザイン）は、すべての子どもが学びにアクセスできるよう、授業や教材の設計段階から多様な選択肢を用意するという考え方です。特定の子どものために後から配慮を加えるのではなく、最初から誰もが学びやすい環境をつくるという点で、合理的配慮とは補完的な関係にあります。本記事では、UDLの基本的な考え方と、学校現場での実践例を紹介します。</p>
 
       <h2>UDLとは何か</h2>
       <p>UDLは、1990年代にアメリカのCAST（Center for Applied Special Technology）が提唱した教育フレームワークです。建築における「ユニバーサルデザイン」（段差のないスロープや自動ドアなど、特定の人だけでなく誰にとっても使いやすい設計）の考え方を、教育に応用したものです。</p>
@@ -295,7 +233,7 @@
 
     <div class="related-articles">
       <h2>関連記事</h2>
-      <a href="/article-reasonable-accommodation.html" class="related-link">
+<a href="/article-reasonable-accommodation.html" class="related-link">
         合理的配慮とは？学校現場での実践方法をわかりやすく解説
         <span>特別支援教育・合理的配慮・インクルーシブ教育</span>
       </a>
@@ -323,4 +261,3 @@
   </footer>
 </body>
 </html>
-
