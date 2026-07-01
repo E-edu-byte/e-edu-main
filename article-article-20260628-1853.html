@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ふりがなメーカーができるまで② | E-edu</title>
+  <meta name="description" content="">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://e-edu.jp/article-article-20260628-1853.html">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6LYGM71B9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G6LYGM71B9');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2331612435863730"
+     crossorigin="anonymous"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      min-height: 100vh;
+      color: #1f2937;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    header { margin-bottom: 40px; }
+    .logo { text-align: center; margin-bottom: 20px; }
+    .logo a { font-size: 1.8rem; color: #065f46; text-decoration: none; font-weight: bold; }
+    nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    nav a { color: #059669; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 24px; }
+    .breadcrumb a { color: #059669; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .article {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    .article-tag {
+      display: inline-block;
+      background: #ecfdf5;
+      color: #059669;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 1.6rem; color: #065f46; margin-bottom: 12px; line-height: 1.5; }
+    .article-meta { color: #9ca3af; font-size: 0.85rem; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb; }
+    h2 {
+      font-size: 1.2rem;
+      color: #065f46;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d1fae5;
+    }
+    h3 { font-size: 1.05rem; color: #065f46; margin-top: 24px; margin-bottom: 12px; }
+    p { color: #4b5563; line-height: 1.9; margin-bottom: 16px; }
+    ul, ol { color: #4b5563; line-height: 1.9; margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; }
+    .highlight-box {
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-left: 4px solid #059669;
+    }
+    .highlight-box p { color: #065f46; margin-bottom: 0; }
+    .example-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .example-box h4 { color: #065f46; font-size: 0.95rem; margin-bottom: 10px; }
+    .example-box p, .example-box ul { font-size: 0.95rem; margin-bottom: 0; }
+    .tip-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      border-left: 3px solid #d1fae5;
+    }
+    .tip-box h4 { color: #065f46; font-size: 1rem; margin-bottom: 8px; }
+    .tip-box p { font-size: 0.95rem; margin-bottom: 0; }
+    .tool-cta {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-radius: 12px;
+      padding: 28px;
+      margin: 32px 0;
+      text-align: center;
+    }
+    .tool-cta h3 { color: #065f46; margin-bottom: 12px; }
+    .tool-cta p { color: #4b5563; margin-bottom: 20px; font-size: 0.95rem; }
+    .tool-cta a {
+      display: inline-block;
+      background: #059669;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .tool-cta a:hover { background: #047857; }
+    .related-articles { margin-bottom: 40px; }
+    .related-articles h2 { font-size: 1.1rem; color: #065f46; margin-bottom: 16px; border-bottom: none; }
+    .related-link {
+      display: block;
+      background: white;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-decoration: none;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      color: #065f46;
+      transition: box-shadow 0.2s;
+    }
+    .related-link:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .related-link span { color: #6b7280; font-size: 0.85rem; display: block; margin-top: 4px; }
+    footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
+    footer p { color: #6b7280; font-size: 0.9rem; }
+    footer nav { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo"><a href="/">E-edu</a></div>
+      <nav>
+        <a href="/">ホーム</a>
+        <a href="/articles.html">記事・ガイド</a>
+        <a href="/about.html">運営者情報</a>
+        <a href="/privacy.html">プライバシーポリシー</a>
+        <a href="/terms.html">利用規約</a>
+        <a href="/contact.html">お問い合わせ</a>
+      </nav>
+    </header>
+
+    <p class="breadcrumb"><a href="/">ホーム</a> &gt; <a href="/articles.html">記事・ガイド</a> &gt; ふりがなメーカー②</p>
+
+    <article class="article">
+      <span class="article-tag">ふりがなメーカー</span>
+      <h1>ふりがなメーカーができるまで②</h1>
+      <p class="article-meta">2026年6月27日</p>
+
+<h2>システムと生成AI</h2><p>　中学校教員時代からエクセルで関数を組んだり、マクロを作ったりしてシステムをつくるのは好きで、忙しい中でも何かを作ることはよくしていました。</p><p>　生成AIが出てからはやりたいことをきちんと伝えられさえすれば、本を読んで勉強しなくてもマクロを組めます。アセスメント票や個別の指導計画、個別の教育支援計画のシステム、教員が不登校を未然に防止するためのシステムを作ったりしていました。作ったシステムをアプリにすることも簡単にできました。アプリにすると使いやすくなることもあり、「先生たちに使ってもらいたい！」というよいものができたりしました。</p><p>　でも、残念ながらそのアプリを学校で使ってもらうことはできませんでした。個人で開発したものは高いお金を払って証明をもらわないと、学校のセキュリティに引っかかてしまうのです。もちろん、そのための予算などありません。残念ながら幻のアプリになってしまったのです。そのアプリは今も私の個人ＰＣ上だけで作動しています。</p><h2>Claude codeを使い始める</h2><p>　2025年末頃からアンソロピックのclaudecodeに興味を持ち始めました。claudeは生成AIが出たときに少し使ったことがあり、そのだいぶ後でコーディングの能力がすごいという情報は入っていましたが、もともとプログラミングの経験はなかったのでなかなか手を出せずにいたのです。</p><p>　年末年始で時間もあったので何か作ってみようかと思い、まずはclaude proに課金→インクルーシブ教育に関係のあるニュースを自動で取得して要約して表示するWEBサイトを構築しました。サイト画面は一瞬でできましたが、サーバーを立てたり、ドメインの取得や管理画面の設定などはこのときに色々試してノウハウを学びました。……これもやり方はgeminiやchatgptに聞きながら試行錯誤という感じでした。本も買わず、人に教えてもらうこともなくここまでできたのもAIの進化のおかげです。</p><h2>ふりがなメーカー開発前夜</h2><p>　その後、毎日自動で更新される英語学習サイトを自作しました。これも、自分しか使っていない贅沢な（知られていない）ものですが、ここまでの経験を通して色々とわかったことがありました。</p><p>・アプリにするとお金がかかるし、学校ではセキュリティ上使ってもらうハードルが高くなる。そもそも料金が発生するサービスは向かない。</p><p>・思ったよりも自分の力で多くの機能をつけられる</p><p>・サイトの運用の中でAIを使ったシステムを組み込むとAIが動くたびに料金が発生し、個人が提供するサービスとしては成り立たない</p><p><br></p><p>そんな状況で2026年5月のGWを迎えました。</p><div class="example-box"><h4>ふりがなメーカーができるまで③　に続く</h4></div><p><br></p><p><br></p>
+    </article>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 E-edu. All rights reserved.</p>
+    <nav>
+      <a href="/">ホーム</a>
+      <a href="/articles.html">記事・ガイド</a>
+      <a href="/about.html">運営者情報</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</body>
+</html>
