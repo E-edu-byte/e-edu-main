@@ -401,11 +401,11 @@
     <div style="background:linear-gradient(135deg,#fff7ed,#fffbeb);border-radius:14px;border:1px solid #fed7aa;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
         <span style="font-size:1.2rem;">❤️</span>
-        <span style="font-weight:bold;color:#9a3412;font-size:0.95rem;">E-eduサポーター</span>
-        <span style="font-size:0.8rem;color:#78716c;">応援いただいたサポーターの皆さま</span>
-        <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer" style="font-size:0.8rem;color:#ea580c;margin-left:auto;text-decoration:underline;">サイト運営を応援する</a>
+        <span style="font-weight:bold;color:#9a3412;font-size:0.95rem;">E-eduサポーター：このサイトは現在、毎日平均200人ほどに利用されています。維持費は開発者と皆様からのご支援で賄っています。1回100円からご支援いただけますので、ぜひご検討ください。</span>
+        <span style="font-size:0.75rem;color:#78716c;">応援いただいたサポーターのお名前/ニックネーム</span>
+        <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem;color:#ea580c;text-decoration:underline;">サイト運営を応援する</a>
       </div>
-      <div id="supporters-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      <div id="supporters-list" style="display:flex;flex-direction:column;gap:8px;"></div>
     </div>
   </div>
 
@@ -612,7 +612,7 @@
   <script>
     (async function() {
       try {
-        const url = 'https://uckogseelvlyhkxwisgc.supabase.co/rest/v1/furigana_announcements?type=eq.supporter&is_active=eq.true&order=created_at.asc';
+        const url = 'https://uckogseelvlyhkxwisgc.supabase.co/rest/v1/furigana_announcements?type=eq.supporter&is_active=eq.true&order=created_at.desc';
         const res = await fetch(url, {
           headers: {
             'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVja29nc2VlbHZseWhreHdpc2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyMDMzMzQsImV4cCI6MjA4Njc3OTMzNH0.f23dClG9Y061Ar5q6MPMy4RT_cS1i0kEpZ89Yi35NuE',
