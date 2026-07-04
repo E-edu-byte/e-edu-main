@@ -468,10 +468,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const published = file ? parseCards(file.text) : [];
         const idx = await getDraftIndex();
         const drafts = (idx?.data.drafts || []).map(d => ({ ...d, draft: true }));
-        // 公開済みと下書きをマージ（下書きが公開済みにもある場合は公開済み側を優先）
-        const publishedSlugs = new Set(published.map(p => p.slug));
-        const draftOnly = drafts.filter(d => !publishedSlugs.has(d.slug));
-        return res.status(200).json([...published, ...draftOnly]);
+        // 公開済み記事と下書きの両方を一覧に表示する。
+        // 公開済み記事に下書きがある場合も、下書きを別行として出す（編集途中の内容にアクセスできるように）。
+        return res.status(200).json([...published, ...drafts]);
       }
       if (action === 'get') {
         const slug = req.query.slug as string;
