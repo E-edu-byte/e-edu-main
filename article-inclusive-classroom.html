@@ -22,19 +22,37 @@
      crossorigin="anonymous"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
       background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
       min-height: 100vh;
       color: #1f2937;
     }
-    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-    header { margin-bottom: 40px; }
-    .logo { text-align: center; margin-bottom: 20px; }
-    .logo a { font-size: 1.8rem; color: #065f46; text-decoration: none; font-weight: bold; }
-    nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
-    nav a { color: #059669; text-decoration: none; }
-    nav a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px 20px 40px; }
+    header { margin-bottom: 0; }
+    .menu-btn {
+      position: fixed; top: 3px; right: 16px; z-index: 1000;
+      background: #059669; color: white; border: none; border-radius: 8px;
+      width: 40px; height: 40px; font-size: 1.3rem; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;
+    }
+    .menu-btn:hover { background: #047857; }
+    .dropdown-menu {
+      position: fixed; top: 68px; right: 16px; z-index: 999;
+      background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 12px 0; display: none; min-width: 180px;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-menu a { display: block; padding: 10px 20px; color: #065f46; text-decoration: none; font-size: 0.95rem; }
+    .dropdown-menu a:hover { background: #ecfdf5; }
+    .top-nav {
+      background: white; border-bottom: 1px solid #d1fae5;
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+      padding: 12px 20px; margin-bottom: 0;
+    }
+    .top-nav a { color: #059669; text-decoration: none; font-size: 0.95rem; }
+    .top-nav a:hover { text-decoration: underline; }
     .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 24px; }
     .breadcrumb a { color: #059669; text-decoration: none; }
     .breadcrumb a:hover { text-decoration: underline; }
@@ -77,6 +95,14 @@
       border-left: 4px solid #059669;
     }
     .highlight-box p { color: #065f46; margin-bottom: 0; }
+    .example-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .example-box h4 { color: #065f46; font-size: 0.95rem; margin-bottom: 10px; }
+    .example-box p, .example-box ul { font-size: 0.95rem; margin-bottom: 0; }
     .tip-box {
       background: #f9fafb;
       border-radius: 8px;
@@ -124,69 +150,9 @@
     footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
     footer p { color: #6b7280; font-size: 0.9rem; }
     footer nav { margin-top: 16px; }
-      /* 固定メニューボタン */
-    .menu-btn {
-      position: fixed;
-      top: 3px;
-      right: 16px;
-      z-index: 1000;
-      background: #059669;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      width: 40px;
-      height: 40px;
-      font-size: 1.3rem;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .menu-btn:hover { background: #047857; }
-    /* ドロップダウンメニュー */
-    .dropdown-menu {
-      position: fixed;
-      top: 68px;
-      right: 16px;
-      z-index: 999;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      padding: 12px 0;
-      display: none;
-      min-width: 180px;
-    }
-    .dropdown-menu.open { display: block; }
-    .dropdown-menu a {
-      display: block;
-      padding: 10px 20px;
-      color: #065f46;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-    .dropdown-menu a:hover { background: #ecfdf5; }
-    /* トップナビバー */
-    .top-nav {
-      background: white;
-      border-bottom: 1px solid #d1fae5;
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      padding: 12px 20px;
-      margin-bottom: 0;
-    }
-    .top-nav a {
-      color: #059669;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-    .top-nav a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <!-- 固定メニューボタン -->
   <button class="menu-btn" onclick="document.querySelector('.dropdown-menu').classList.toggle('open')" aria-label="メニュー">☰</button>
   <div class="dropdown-menu">
     <a href="/">ホーム</a>
@@ -197,8 +163,6 @@
     <a href="/contact.html">お問い合わせ</a>
     <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
   </div>
-
-  <!-- トップナビバー -->
   <nav class="top-nav">
     <a href="/">ホーム</a>
     <a href="/articles.html">記事・ガイド</a>
@@ -218,10 +182,10 @@
       <h1>通常学級でできるインクルーシブ教育の工夫10選</h1>
       <p class="article-meta">2026年5月30日 ／ インクルーシブ教育・通常学級・特別支援教育・合理的配慮</p>
 
-      <p>インクルーシブ教育というと、特別支援学校や特別支援学級の話と思われることがありますが、通常学級の担任こそ、毎日の授業の中でインクルーシブ教育を実践する中心的な存在です。発達障害・学習困難・外国につながりのある子ども・不登校傾向のある子どもなど、多様な背景を持つ子どもが共に学ぶ通常学級で、今日から実践できる工夫を10の視点から紹介します。</p>
+<p>インクルーシブ教育というと、特別支援学校や特別支援学級に在籍する児童生徒が対象であると思われるかもしれません。間違ってはいませんが、インクルーシブ教育はすべての子どもたちを包摂する教育ですので、通常の学級に在籍する児童生徒も対象になります。つまり、どの学校、学年、学級においても、日々の授業の中でインクルーシブ教育を意識していく必要があるということです。発達障害・学習困難・外国につながりのある子ども・不登校傾向のある子どもなど、多様な背景を持つ子どもが同じ学級で共に学んでいます。今回は、今日から実践できる工夫を10の視点から紹介します。</p>
 
       <div class="highlight-box">
-        <p><strong>前提として：</strong>以下の工夫の多くは、特定の子どもだけでなくクラス全体にとって有益なものです。「あの子のための配慮」ではなく「みんなにとってわかりやすい授業」を目指すことが、インクルーシブな学級づくりの基本です。</p>
+        <p><strong>前提として：</strong>工夫の多くは、特定の子どもだけでなくクラス全体にとって有益なものです。「あの子のための配慮」のみではなく「みんなが学ぶ授業」を目指すことが、インクルーシブな授業づくりの基本です。</p>
       </div>
 
       <h2>授業設計の工夫</h2>
@@ -305,7 +269,7 @@
 
     <div class="related-articles">
       <h2>関連記事</h2>
-      <a href="/article-udl.html" class="related-link">
+<a href="/article-udl.html" class="related-link">
         UDL（学びのユニバーサルデザイン）とは？学校での実践をわかりやすく解説
         <span>UDL・インクルーシブ教育・特別支援教育</span>
       </a>
@@ -329,8 +293,8 @@
       <a href="/privacy.html">プライバシーポリシー</a>
       <a href="/terms.html">利用規約</a>
       <a href="/contact.html">お問い合わせ</a>
+      <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
     </nav>
   </footer>
 </body>
 </html>
-
