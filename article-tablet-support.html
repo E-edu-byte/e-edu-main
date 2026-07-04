@@ -22,19 +22,37 @@
      crossorigin="anonymous"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
       background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
       min-height: 100vh;
       color: #1f2937;
     }
-    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-    header { margin-bottom: 40px; }
-    .logo { text-align: center; margin-bottom: 20px; }
-    .logo a { font-size: 1.8rem; color: #065f46; text-decoration: none; font-weight: bold; }
-    nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
-    nav a { color: #059669; text-decoration: none; }
-    nav a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px 20px 40px; }
+    header { margin-bottom: 0; }
+    .menu-btn {
+      position: fixed; top: 3px; right: 16px; z-index: 1000;
+      background: #059669; color: white; border: none; border-radius: 8px;
+      width: 40px; height: 40px; font-size: 1.3rem; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;
+    }
+    .menu-btn:hover { background: #047857; }
+    .dropdown-menu {
+      position: fixed; top: 68px; right: 16px; z-index: 999;
+      background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 12px 0; display: none; min-width: 180px;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-menu a { display: block; padding: 10px 20px; color: #065f46; text-decoration: none; font-size: 0.95rem; }
+    .dropdown-menu a:hover { background: #ecfdf5; }
+    .top-nav {
+      background: white; border-bottom: 1px solid #d1fae5;
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+      padding: 12px 20px; margin-bottom: 0;
+    }
+    .top-nav a { color: #059669; text-decoration: none; font-size: 0.95rem; }
+    .top-nav a:hover { text-decoration: underline; }
     .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 24px; }
     .breadcrumb a { color: #059669; text-decoration: none; }
     .breadcrumb a:hover { text-decoration: underline; }
@@ -84,7 +102,16 @@
       margin: 24px 0;
     }
     .example-box h4 { color: #065f46; font-size: 0.95rem; margin-bottom: 10px; }
-    .example-box p { font-size: 0.95rem; margin-bottom: 0; }
+    .example-box p, .example-box ul { font-size: 0.95rem; margin-bottom: 0; }
+    .tip-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      border-left: 3px solid #d1fae5;
+    }
+    .tip-box h4 { color: #065f46; font-size: 1rem; margin-bottom: 8px; }
+    .tip-box p { font-size: 0.95rem; margin-bottom: 0; }
     .tool-cta {
       background: linear-gradient(135deg, #ecfdf5, #d1fae5);
       border-radius: 12px;
@@ -123,69 +150,9 @@
     footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
     footer p { color: #6b7280; font-size: 0.9rem; }
     footer nav { margin-top: 16px; }
-      /* 固定メニューボタン */
-    .menu-btn {
-      position: fixed;
-      top: 3px;
-      right: 16px;
-      z-index: 1000;
-      background: #059669;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      width: 40px;
-      height: 40px;
-      font-size: 1.3rem;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .menu-btn:hover { background: #047857; }
-    /* ドロップダウンメニュー */
-    .dropdown-menu {
-      position: fixed;
-      top: 68px;
-      right: 16px;
-      z-index: 999;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      padding: 12px 0;
-      display: none;
-      min-width: 180px;
-    }
-    .dropdown-menu.open { display: block; }
-    .dropdown-menu a {
-      display: block;
-      padding: 10px 20px;
-      color: #065f46;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-    .dropdown-menu a:hover { background: #ecfdf5; }
-    /* トップナビバー */
-    .top-nav {
-      background: white;
-      border-bottom: 1px solid #d1fae5;
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      padding: 12px 20px;
-      margin-bottom: 0;
-    }
-    .top-nav a {
-      color: #059669;
-      text-decoration: none;
-      font-size: 0.95rem;
-    }
-    .top-nav a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <!-- 固定メニューボタン -->
   <button class="menu-btn" onclick="document.querySelector('.dropdown-menu').classList.toggle('open')" aria-label="メニュー">☰</button>
   <div class="dropdown-menu">
     <a href="/">ホーム</a>
@@ -196,8 +163,6 @@
     <a href="/contact.html">お問い合わせ</a>
     <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
   </div>
-
-  <!-- トップナビバー -->
   <nav class="top-nav">
     <a href="/">ホーム</a>
     <a href="/articles.html">記事・ガイド</a>
@@ -217,7 +182,7 @@
       <h1>タブレット・iPadを使った特別支援教育の実践：設定から授業活用まで</h1>
       <p class="article-meta">2026年5月30日 ／ ICT・タブレット・iPad・特別支援教育・合理的配慮</p>
 
-      <p>GIGAスクール構想により、多くの学校でiPadやChromebookなどのタブレット端末が整備されました。これらの端末には、障害のある子どもの学習を支援するアクセシビリティ機能が標準で搭載されており、追加コストなしに活用できます。本記事では、特別支援教育の観点から、タブレット端末のアクセシビリティ設定の活用法と、授業・家庭学習での具体的な実践例を紹介します。</p>
+<p>GIGAスクール構想により、多くの学校でiPadやChromebookなどのタブレット端末が整備されました。これらの端末には、障害のある子どもの学習を支援するアクセシビリティ機能が標準で搭載されており、追加コストなしに活用できます。本記事では、特別支援教育の観点から、タブレット端末のアクセシビリティ設定の活用法と、授業・家庭学習での具体的な実践例を紹介します。</p>
 
       <h2>タブレットが特別支援教育に向いている理由</h2>
       <p>タブレット端末が特別支援教育と相性が良い理由は、「個別最適化」と「代替手段の提供」が一台で実現できるからです。文字サイズの拡大・音声読み上げ・音声入力・タッチ操作といった機能が標準搭載されており、それぞれの子どもの困難に合わせて設定を調整できます。また、紙の教材と違い、デジタル教材は何度でも書き直せる・拡大できる・音声で聴けるという点で、多様な学び方に対応しています。</p>
@@ -295,7 +260,7 @@
 
     <div class="related-articles">
       <h2>関連記事</h2>
-      <a href="/article-ict-support.html" class="related-link">
+<a href="/article-ict-support.html" class="related-link">
         ICTを活用した特別支援教育：タブレット・音声・AIツールの実践事例
         <span>ICT・特別支援教育・合理的配慮・タブレット</span>
       </a>
@@ -319,8 +284,8 @@
       <a href="/privacy.html">プライバシーポリシー</a>
       <a href="/terms.html">利用規約</a>
       <a href="/contact.html">お問い合わせ</a>
+      <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
     </nav>
   </footer>
 </body>
 </html>
-
