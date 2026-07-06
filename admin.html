@@ -336,7 +336,7 @@
         const url = prompt('リンク先URLを入力してください', 'https://');
         if (!url) { editor().focus(); return; }
         editor().focus();
-        const a = `<a href="${url.replace(/"/g, '&quot;')}" target="_blank" rel="noopener noreferrer">${escapeHtml(selectedText)}</a>`;
+        const a = `<a href="${url.replace(/"/g, '&quot;')}">${escapeHtml(selectedText)}</a>`;
         document.execCommand('insertHTML', false, a);
       } else {
         // 何も選択していない場合：表示文字とURLを入力してリンクを挿入
@@ -345,7 +345,7 @@
         const url = prompt('リンク先URLを入力してください', 'https://');
         if (!url) { editor().focus(); return; }
         editor().focus();
-        const a = `<a href="${url.replace(/"/g, '&quot;')}" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
+        const a = `<a href="${url.replace(/"/g, '&quot;')}">${escapeHtml(text)}</a>`;
         document.execCommand('insertHTML', false, a);
       }
     }
