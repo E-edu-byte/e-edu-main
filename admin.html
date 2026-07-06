@@ -327,9 +327,27 @@
     function exec(cmd) { document.execCommand(cmd, false, null); editor().focus(); }
     function fmt(tag) { document.execCommand('formatBlock', false, tag); editor().focus(); }
     function addLink() {
-      const url = prompt('リンク先URLを入力してください', 'https://');
-      if (url) document.execCommand('createLink', false, url);
-      editor().focus();
+      // 選択中のテキストを取得
+      const sel = window.getSelection();
+      const selectedText = sel ? sel.toString() : '';
+
+      if (selectedText) {
+        // 文字を選択している場合：選択文字をリンクに置き換える
+        const url = prompt('リンク先URLを入力してください', 'https://');
+        if (!url) { editor().focus(); return; }
+        editor().focus();
+        const a = `<a href="${url.replace(/"/g, '&quot;')}" target="_blank" rel="noopener noreferrer">${escapeHtml(selectedText)}</a>`;
+        document.execCommand('insertHTML', false, a);
+      } else {
+        // 何も選択していない場合：表示文字とURLを入力してリンクを挿入
+        const text = prompt('リンクとして表示する文字を入力してください', '');
+        if (!text) { editor().focus(); return; }
+        const url = prompt('リンク先URLを入力してください', 'https://');
+        if (!url) { editor().focus(); return; }
+        editor().focus();
+        const a = `<a href="${url.replace(/"/g, '&quot;')}" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
+        document.execCommand('insertHTML', false, a);
+      }
     }
     const BOXES = {
       highlight: '<div class="highlight-box"><p><strong>ポイント：</strong>強調したい内容をここに書きます。</p></div><p><br></p>',
