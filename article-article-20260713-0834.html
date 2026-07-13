@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ふりがなメーカーができるまで③ | E-edu</title>
+  <meta name="description" content="ついに「ふりがなメーカー」の開発に着手。プロトタイプは30分でできたのです。でもその後が大変でした。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://e-edu.jp/article-article-20260713-0834.html">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6LYGM71B9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G6LYGM71B9');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2331612435863730"
+     crossorigin="anonymous"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      min-height: 100vh;
+      color: #1f2937;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px 20px 40px; }
+    header { margin-bottom: 0; }
+    .menu-btn {
+      position: fixed; top: 3px; right: 16px; z-index: 1000;
+      background: #059669; color: white; border: none; border-radius: 8px;
+      width: 40px; height: 40px; font-size: 1.3rem; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;
+    }
+    .menu-btn:hover { background: #047857; }
+    .dropdown-menu {
+      position: fixed; top: 68px; right: 16px; z-index: 999;
+      background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 12px 0; display: none; min-width: 180px;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-menu a { display: block; padding: 10px 20px; color: #065f46; text-decoration: none; font-size: 0.95rem; }
+    .dropdown-menu a:hover { background: #ecfdf5; }
+    .top-nav {
+      background: white; border-bottom: 1px solid #d1fae5;
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+      padding: 12px 20px; margin-bottom: 0;
+    }
+    .top-nav a { color: #059669; text-decoration: none; font-size: 0.95rem; }
+    .top-nav a:hover { text-decoration: underline; }
+    .breadcrumb { font-size: 0.9rem; color: #6b7280; margin-bottom: 24px; }
+    .breadcrumb a { color: #059669; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .article {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    .article-tag {
+      display: inline-block;
+      background: #ecfdf5;
+      color: #059669;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+    h1 { font-size: 1.6rem; color: #065f46; margin-bottom: 12px; line-height: 1.5; }
+    .article-meta { color: #9ca3af; font-size: 0.85rem; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb; }
+    h2 {
+      font-size: 1.2rem;
+      color: #065f46;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d1fae5;
+    }
+    h3 { font-size: 1.05rem; color: #065f46; margin-top: 24px; margin-bottom: 12px; }
+    p { color: #4b5563; line-height: 1.9; margin-bottom: 16px; }
+    ul, ol { color: #4b5563; line-height: 1.9; margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; }
+    .highlight-box {
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-left: 4px solid #059669;
+    }
+    .highlight-box p { color: #065f46; margin-bottom: 0; }
+    .example-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .example-box h4 { color: #065f46; font-size: 0.95rem; margin-bottom: 10px; }
+    .example-box p, .example-box ul { font-size: 0.95rem; margin-bottom: 0; }
+    .tip-box {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 16px 0;
+      border-left: 3px solid #d1fae5;
+    }
+    .tip-box h4 { color: #065f46; font-size: 1rem; margin-bottom: 8px; }
+    .tip-box p { font-size: 0.95rem; margin-bottom: 0; }
+    .tool-cta {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-radius: 12px;
+      padding: 28px;
+      margin: 32px 0;
+      text-align: center;
+    }
+    .tool-cta h3 { color: #065f46; margin-bottom: 12px; }
+    .tool-cta p { color: #4b5563; margin-bottom: 20px; font-size: 0.95rem; }
+    .tool-cta a {
+      display: inline-block;
+      background: #059669;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .tool-cta a:hover { background: #047857; }
+    .related-articles { margin-bottom: 40px; }
+    .related-articles h2 { font-size: 1.1rem; color: #065f46; margin-bottom: 16px; border-bottom: none; }
+    .related-link {
+      display: block;
+      background: white;
+      border-radius: 8px;
+      padding: 16px 20px;
+      text-decoration: none;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      color: #065f46;
+      transition: box-shadow 0.2s;
+    }
+    .related-link:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .related-link span { color: #6b7280; font-size: 0.85rem; display: block; margin-top: 4px; }
+    footer { text-align: center; padding: 40px 20px; border-top: 1px solid #d1fae5; }
+    footer p { color: #6b7280; font-size: 0.9rem; }
+    footer nav { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <button class="menu-btn" onclick="document.querySelector('.dropdown-menu').classList.toggle('open')" aria-label="メニュー">☰</button>
+  <div class="dropdown-menu">
+    <a href="/">ホーム</a>
+    <a href="/articles.html">記事・ガイド</a>
+    <a href="/about.html">運営者情報</a>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <a href="/terms.html">利用規約</a>
+    <a href="/contact.html">お問い合わせ</a>
+    <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
+  </div>
+  <nav class="top-nav">
+    <a href="/">ホーム</a>
+    <a href="/articles.html">記事・ガイド</a>
+    <a href="/about.html">運営者情報</a>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <a href="/terms.html">利用規約</a>
+    <a href="/contact.html">お問い合わせ</a>
+    <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
+  </nav>
+  <div class="container">
+    <header></header>
+
+    <p class="breadcrumb"><a href="/">ホーム</a> &gt; <a href="/articles.html">記事・ガイド</a> &gt; ふりがなメーカー③</p>
+
+    <article class="article">
+      <span class="article-tag">ふりがなメーカー</span>
+      <h1>ふりがなメーカーができるまで③</h1>
+      <p class="article-meta">2026年7月13日</p>
+
+<h2>自分で作ってみようかなぁ</h2><p>「ふりがな振るのに何かよいツールがあれば教えてくださいよ」</p><p>「写真やPDFに自動でふりがなを振れるアプリはあるよ。<br>　でも編集面がなぁ・・・<br>　あと、ワードに自動で一気にふりがなをつけてくれるマクロも紹介されているよ。<br>　でもレイアウトのズレを直すのが大変なんだよね。」<br></p><p>　2026年GWに元同僚の中学校の先生と食事会をしていたときの会話です。こんな会話から始まって、<br></p><p>「・・・最近、AIでコーディングやっているから自分で作ってみようかなぁ。って言うだけでやらないかもしれないけど☺」</p><h2>プロトタイプは30分ほどで完成</h2><p>　食事会も終わり、家に帰って少しして「ちょっとやってみるか」ということで、まずはClaudeCodeと相談。以前、アプリにしたら学校現場ではセキュリティ上使えなそうだという経験を踏まえてWeb上のアプリにする方針が決まりました。ただ、定期テストなどをネットワーク上にUPすると、こちらも情報セキュリティ上問題が起こる可能性があるため、現場では使用してもらえない可能性があります。そのこともAI君と対話していくと、どうやら端末のキャッシュだけでうまくできそうだということになりました。そんな感じで大体の方針を決めていきました。</p><p>・Webアプリの形を目指す<br>・ネットワーク上にデータをアップしない（端末内のみでの処理）<br>・レイアウトがずれずにふりがなを自動でつけられる<br>・ふりがなを編集できるようにする<br>・作成したものを再度保存して印刷できる</p><p>　「どう？できそう？」と相談していくと、ワードにそのままつけるのは難しいということになりました。なんとかワードに対応したシステムにできないかと試行錯誤したのですが、バージョンUPされるたびにシステム改修の可能性もあり、コスパを考えて断念。結果、PDFで文字を認識し、自動でルビ振りをする形に決まりました。</p><p>　「とりあえず一回作ってみて」というと、自分のＰＣ上にシステムのプロトタイプが完成。ここまで30分でした。ClaudeCodeすごい。</p><h2>その日（次の日）寝たのは朝の3：00頃</h2><p>　ClaudeCodeはPro版でしか使えません。つまり、課金です。そしてPro版でも４時間、１週間で使えるトークンに制限があります。その制限を越して使いたければ・・・また課金です。</p><p>　軽い気持ちで始めたため、夜の１１：００くらいからスタートしました。一瞬でプロトタイプが完成したので、「これはいける！」という見通しが立ち嬉しくなってしまいました。そのまま朝の３時まで。トークンがなくなったらすぐ課金。開発はゲームをしている感覚と同じです。私はゲームで課金したことはないのですが、「今、ここまでやってしまいたい」という思い、衝動性の強さが相まって、しかも世の中にとって良いものを開発しているという感覚・・・気がつけば朝の３：００になっていました。これだけ時間とお金を費やしたのに、恐ろしやClaudeCode・・・開発へのわくわく感に満たされてその日の作業を終えたのでした。</p><div class="example-box"><h4>ふりがなメーカーができるまで④　に続く</h4></div>
+    </article>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 E-edu. All rights reserved.</p>
+    <nav>
+      <a href="/">ホーム</a>
+      <a href="/articles.html">記事・ガイド</a>
+      <a href="/about.html">運営者情報</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/contact.html">お問い合わせ</a>
+      <a href="https://ofuse.me/eedu/letter" target="_blank" rel="noopener noreferrer">運営を応援する</a>
+    </nav>
+  </footer>
+</body>
+</html>
