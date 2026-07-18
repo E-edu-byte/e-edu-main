@@ -247,6 +247,7 @@ interface ArticleData {
   breadcrumb: string;
   bodyHtml: string;
   relatedHtml: string;
+  relatedSlugs?: string[];
   draft?: boolean;
 }
 
@@ -276,6 +277,20 @@ async function deleteDraft(slug: string) {
     idx.data.drafts = idx.data.drafts.filter(d => d.slug !== slug);
     await saveDraftIndex(idx.data, idx.sha);
   }
+}
+
+// 選択された関連スラッグから関連記事リンクHTMLを生成
+function buildRelated(slugs: string[], cards: Array<{ slug: string; title: string; tag: string }>): string {
+  const bySlug: Record<string, { slug: string; title: string; tag: string }> = {};
+  for (const c of cards) bySlug[c.slug] = c;
+  return slugs
+    .map(s => bySlug[s])
+    .filter(Boolean)
+    .map(c => `      <a href="/article-${c.slug}.html" class="related-link">
+        ${esc(c.title)}
+        <span>${esc(c.tag)}</span>
+      </a>`)
+    .join('\n');
 }
 
 function renderArticle(a: ArticleData): string {
@@ -346,6 +361,10 @@ function parseArticle(html: string, slug: string): ArticleData {
   const m = html.match(/<p class="article-meta">[\s\S]*?<\/p>([\s\S]*?)<\/article>/);
   if (m) bodyHtml = m[1].trim();
   const relatedHtml = pick(/<div class="related-articles">\s*<h2>関連記事<\/h2>([\s\S]*?)<\/div>/);
+  const relatedSlugs: string[] = [];
+  const rre = /\/article-([^".]+)\.html" class="related-link"/g;
+  let rm;
+  while ((rm = rre.exec(relatedHtml))) relatedSlugs.push(rm[1]);
   return {
     slug,
     title: decodeEntities(title),
@@ -355,6 +374,7 @@ function parseArticle(html: string, slug: string): ArticleData {
     breadcrumb: decodeEntities(breadcrumb),
     bodyHtml,
     relatedHtml: relatedHtml.trim(),
+    relatedSlugs,
   };
 }
 function decodeEntities(s: string): string {
@@ -516,13 +536,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const date = todayISO();
 
+      // 記事一覧を先に取得（関連記事の生成に使う）
+      const list = await ghGet('articles.html');
+      const cards = list ? parseCards(list.text) : [];
+
+      // 関連記事HTMLを選択スラッグから生成（自分自身は除外）
+      if (a.relatedSlugs && a.relatedSlugs.length) {
+        a.relatedHtml = buildRelated(a.relatedSlugs.filter(s => s && s !== a.slug), cards);
+      } else {
+        a.relatedHtml = a.relatedHtml || '';
+      }
+
       // 1) 記事HTML
       const existing = await ghGet(`article-${a.slug}.html`);
       await ghPut(`article-${a.slug}.html`, renderArticle(a),
         `${existing ? '記事更新' : '記事作成'}: ${a.slug}`, existing?.sha);
 
       // 2) articles.html カード
-      const list = await ghGet('articles.html');
       let newListText = list?.text || '';
       if (list) {
         newListText = upsertCard(list.text, a);

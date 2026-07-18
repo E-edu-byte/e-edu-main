@@ -162,10 +162,10 @@
             <div id="f_body_editor" class="editor pv" contenteditable="true"></div>
             <textarea id="f_body_src" class="src" style="display:none;width:100%;"></textarea>
           </div>
-          <details class="field">
-            <summary style="cursor:pointer;color:#059669;font-size:.85rem;">関連記事HTML（上級・任意）</summary>
-            <textarea id="f_related" rows="5" style="margin-top:8px;font-family:ui-monospace,monospace;font-size:.8rem;"></textarea>
-          </details>
+          <div class="field">
+            <label>関連記事 <span class="hint">(記事末尾に表示・最大5件をプルダウンで選択)</span></label>
+            <div id="relatedSelects"></div>
+          </div>
 
           <div class="actions">
             <button class="btn" id="saveBtn" onclick="save()">保存して公開</button>
@@ -217,9 +217,11 @@
     }
 
     // ---- 一覧 ----
+    let allArticles = [];
     async function loadList() {
       const res = await fetch('/api/articles?action=list');
       const items = await res.json();
+      allArticles = items;
       const drafts = items.filter(it => it.draft);
       const published = items.filter(it => !it.draft);
 
@@ -245,7 +247,7 @@
       $('editTitle').textContent = '新規作成';
       $('f_title').value=''; $('f_slug').value=''; $('f_tag').value='';
       $('f_desc').value=''; $('f_meta').value=''; $('f_breadcrumb').value='';
-      setBody(''); $('f_related').value='';
+      setBody(''); buildRelatedSelects([], null);
       if (srcMode) toggleSrc();
       $('f_slug').disabled = false;
       $('delBtn').style.display = 'none';
@@ -271,7 +273,7 @@
       $('f_breadcrumb').value = a.breadcrumb || '';
       if (srcMode) toggleSrc();
       setBody(a.bodyHtml || '');
-      $('f_related').value = a.relatedHtml || '';
+      buildRelatedSelects(a.relatedSlugs || [], slug);
       $('delBtn').style.display = 'inline-block';
       window.scrollTo(0,0);
     }
@@ -375,6 +377,31 @@
       }
     }
 
+    // 関連記事のプルダウン（最大5件）を構築
+    function buildRelatedSelects(selectedSlugs, curSlug) {
+      selectedSlugs = selectedSlugs || [];
+      const pub = (allArticles || []).filter(a => !a.draft && a.slug !== curSlug);
+      const opts = '<option value="">（なし）</option>' +
+        pub.map(a => `<option value="${a.slug}">${escapeHtml(a.title)}</option>`).join('');
+      let html = '';
+      for (let i = 0; i < 5; i++) {
+        html += `<select id="rel${i}" style="width:100%;margin-bottom:8px;">${opts}</select>`;
+      }
+      $('relatedSelects').innerHTML = html;
+      for (let i = 0; i < 5; i++) { const el = $('rel' + i); if (el) el.value = selectedSlugs[i] || ''; }
+    }
+    // 選択された関連スラッグを収集（重複・自分自身・空を除外）
+    function collectRelated() {
+      const cur = $('f_slug').value.trim();
+      const rs = [];
+      for (let i = 0; i < 5; i++) {
+        const el = $('rel' + i);
+        const v = el ? el.value : '';
+        if (v && v !== cur && rs.indexOf(v) < 0) rs.push(v);
+      }
+      return rs;
+    }
+
     function collect() {
       return {
         slug: $('f_slug').value.trim(),
@@ -384,7 +411,7 @@
         metaLine: $('f_meta').value.trim(),
         breadcrumb: ($('f_breadcrumb').value || $('f_title').value).trim(),
         bodyHtml: getBody(),
-        relatedHtml: $('f_related').value
+        relatedSlugs: collectRelated()
       };
     }
 
