@@ -286,10 +286,7 @@ function buildRelated(slugs: string[], cards: Array<{ slug: string; title: strin
   return slugs
     .map(s => bySlug[s])
     .filter(Boolean)
-    .map(c => `      <a href="/article-${c.slug}.html" class="related-link">
-        ${esc(c.title)}
-        <span>${esc(c.tag)}</span>
-      </a>`)
+    .map(c => `      <a href="/article-${c.slug}.html" class="related-link">${esc(c.title)}</a>`)
     .join('\n');
 }
 
