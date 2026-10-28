@@ -1,6 +1,7 @@
 {
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/furigana", "destination": "/furigana.html" }
+  "redirects": [
+    { "source": "/furigana", "destination": "https://furigana.e-edu.jp/", "permanent": true },
+    { "source": "/furigana.html", "destination": "https://furigana.e-edu.jp/", "permanent": true }
   ]
 }
